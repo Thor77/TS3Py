@@ -431,8 +431,8 @@ class TS3Bot():
             if telnetResponse.startswith('notify'):
                 notifyName = telnetResponse.split(' ')[0]
                 ParsedInfo = self.TSRegex.findall(telnetResponse)
-                print(ParsedInfo)
-                print(telnetResponse)
+                #print(ParsedInfo)
+                #print(telnetResponse)
                 notifyData = {}
                 for ParsedInfoKey in ParsedInfo:
                     notifyData[ParsedInfoKey[0]] = self.escapeString(
