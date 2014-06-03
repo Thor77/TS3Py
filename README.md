@@ -14,3 +14,7 @@ Example:
     virtualserver_id = 1
     bot = TS3Bot(ip, port)
     bot.startBot(query_login, query_password, virtualserver_id)
+    
+Known Bugs
+==========
+Commands with arguments doesnt work!
