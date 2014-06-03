@@ -24,6 +24,11 @@ import re
 import _thread
 import time
 
+import imp
+import pkgutil
+import inspect
+import plugins
+from plugin import Plugin
 
 class TS3Error(Exception):
 
@@ -35,10 +40,10 @@ class TS3Error(Exception):
         return "ID %s (%s)" % (self.code, self.msg)
 
 
-class ServerQuery():
+class TS3Bot():
     TSRegex = re.compile(r"(\w+)=(.*?)(\s|$|\|)")
 
-    def __init__(self, ip='127.0.0.1', query=10011):
+    def __init__(self, ip='127.0.0.1', query=10011, call='!'):
         """
         This class contains functions to connecting a TS3 Query Port and send
         command.
@@ -71,6 +76,10 @@ class ServerQuery():
         _thread.start_new_thread(self.worker, ())
         self.notifyAllactivated = False
         self.notifyAll_func = None
+        # command and plugin variables
+        self.commands = {}
+        self.call = call
+        self.plugins = []
 
     def connect(self):
         """
@@ -95,53 +104,6 @@ class ServerQuery():
         self.telnet.write('quit \n')
         self.telnet.close()
         return True
-
-    def escaping2string(self, string):
-        """
-        Convert the escaping string form the TS3 Query to a human string.
-        @param string: A string form the TS3 Query with ecaping.
-        @type string: str
-        @return: A human string with out escaping.
-        """
-        string = str(string)
-        string = string.replace('\/', '/')
-        string = string.replace('\s', ' ')
-        string = string.replace('\p', '|')
-        string = string.replace('\n', '')
-        string = string.replace('\r', '')
-        try:
-            string = int(string)
-            return string
-        except ValueError:
-            ustring = string.encode("utf-8")
-            return ustring
-
-    def string2escaping(self, string):
-        """
-        Convert a human string to a TS3 Query Escaping String.
-        @param string: A normal/human string.
-        @type string: str
-        @return: A string with escaping of TS3 Query.
-        """
-        if type(string) == type(int()):
-            string = str(string)
-        else:
-            #string = string.encode("utf-8")
-            #string = string.replace('/', '\\/')
-            #string = string.replace(' ', '\\s')
-            #string = string.replace('|', '\\p')
-            string = string.replace(chr(92), r'\\') # \
-            string = string.replace(chr(47), r"\/") # /
-            string = string.replace(chr(32), r'\s') # Space
-            string = string.replace(chr(124), r'\p') # |
-            string = string.replace(chr(7), r'\a') # Bell
-            string = string.replace(chr(8), r'\b') # Backspace
-            string = string.replace(chr(12), r'\f') # Formfeed
-            string = string.replace(chr(10), r'\n') # Newline
-            string = string.replace(chr(13), r'\r') # Carrage Return
-            string = string.replace(chr(9), r'\t') # Horizontal Tab
-            string = string.replace(chr(11), r'\v') # Vertical tab
-        return string.encode('utf-8')
 
     def escapeString(self, value):
         """
@@ -396,6 +358,59 @@ class ServerQuery():
         for ban in raw:
             bans[ban['banid']] = [ban['ip'], ban['created'], ban['invokername'], ban['invokercldbid'], ban['invokeruid'], ban['reason'], ban['enforcements']]
 
+    # command functions
+    def gotCommand(self, command, params, client_id, client_name):
+        if command in self.commands:
+            self.commands[command]['func'](params, client_id, client_name)
+
+    def addCommand(self, cmd, func, helpstring):
+        if cmd not in self.commands:
+            self.commands[cmd] = {'func': func, 'help': helpstring}
+
+    def deleteCommand(self, cmd):
+        if cmd in self.commands:
+            del self.commands[cmd]
+
+    def deleteAllCommands(self):
+        self.commands = {}
+
+    def messageFindCommand(self, name, data):
+        print(name)
+        print(data)
+        #if data['client_type'] == '0':
+        msg = data['msg']
+        msg = msg.strip()
+        if msg[:len(self.call)]:
+            params = msg.split(' ')[1:]
+            self.gotCommand(msg[len(self.call):], params, data['invokerid'], data['invokername'])
+
+    # plugin functions
+    def unloadPlugins(self):
+        self.deleteAllCommands()
+        for plugin in self.plugins:
+            plugin.unload()
+        self.plugins = []
+
+    def loadPlugin(self, modname):
+        module = __import__(modname, fromlist='dummy')
+        imp.reload(module)
+        for name, obj in inspect.getmembers(module):
+            if inspect.isclass(obj) and issubclass(obj, Plugin) and obj != Plugin:
+                plugin = obj(self)
+                self.plugins.append(plugin)
+
+    def loadAllPlugins(self):
+        print('Loading plugins...')
+        prefix = plugins.__name__ + '.'
+        for importer, modname, ispkg in pkgutil.iter_modules(plugins.__path__, prefix):
+            del importer
+            self.loadPlugin(modname)
+
+    def reloadPlugins(self):
+        print('Reloading plugins...')
+        self.unloadPlugins()
+        self.loadAllPlugins()
+
     # notifiy and event functions
 
     def worker(self):
@@ -416,6 +431,8 @@ class ServerQuery():
             if telnetResponse.startswith('notify'):
                 notifyName = telnetResponse.split(' ')[0]
                 ParsedInfo = self.TSRegex.findall(telnetResponse)
+                print(ParsedInfo)
+                print(telnetResponse)
                 notifyData = {}
                 for ParsedInfoKey in ParsedInfo:
                     notifyData[ParsedInfoKey[0]] = self.escapeString(
@@ -463,3 +480,24 @@ class ServerQuery():
 
     def unregisterEvent(self):
         self.command('servernotifyunregister')
+
+    # start function (start the bot working)
+    def startBot(self, login_name, login_password, virtualserver_id=1):
+        # connect to the server and login
+        self.connect()
+        self.login(login_name, login_password)
+        self.use(virtualserver_id)
+
+        self.loadAllPlugins()
+
+        #self.registerEvent('textserver')
+        self.registerEvent('textchannel')
+        self.registerEvent('textprivate')
+        self.registerEvent('server')
+
+        self.registerNotify('notifytextmessage', self.messageFindCommand)
+
+        # start mainloop
+        print('Waiting for events...')
+        while True:
+            time.sleep(0.5)
