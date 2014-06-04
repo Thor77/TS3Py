@@ -22,6 +22,12 @@ class Plugin:
     def poke(self, target_id, msg):
         self.bot.poke(target_id, msg)
 
+    def registerNotify(self, notify_name, func):
+        self.bot.registerNotify(notify_name, func)
+
+    def sendCommand(self, cmd, parameter={}, options=[]):
+        return self.bot.command(cmd, parameter, options)
+
     def unload(self):
         if hasattr(self, 'onUnload') and inspect.ismethod(getattr(self, 'onUnload')):
             self.onUnload()

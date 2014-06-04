@@ -358,25 +358,44 @@ class TS3Bot():
         for ban in raw:
             bans[ban['banid']] = [ban['ip'], ban['created'], ban['invokername'], ban['invokercldbid'], ban['invokeruid'], ban['reason'], ban['enforcements']]
 
+    # self editing
+    def changeSelfNick(self, new_name):
+        self.command('clientupdate', {'client_nickname': new_name})
+
     # command functions
     def gotCommand(self, command, params, client_id, client_name):
+        '''
+        Handle command
+        '''
         if command in self.commands:
             self.commands[command]['func'](params, client_id, client_name)
 
     def addCommand(self, cmd, func, helpstring):
+        '''
+        Register a command
+        '''
         if cmd not in self.commands:
             self.commands[cmd] = {'func': func, 'help': helpstring}
 
     def deleteCommand(self, cmd):
+        '''
+        Delete a command
+        '''
         if cmd in self.commands:
             del self.commands[cmd]
 
     def deleteAllCommands(self):
+        '''
+        Delete all commands
+        '''
         self.commands = {}
 
     def messageFindCommand(self, name, data):
-        print(name)
-        print(data)
+        '''
+        Find command in message
+        '''
+        #print(name)
+        #print(data)
         #if data['client_type'] == '0':
         msg = data['msg']
         msg = msg.strip()
@@ -386,12 +405,19 @@ class TS3Bot():
 
     # plugin functions
     def unloadPlugins(self):
+        '''
+        Unload all plugins
+        '''
         self.deleteAllCommands()
+        self.unregisterAllNotifys()
         for plugin in self.plugins:
             plugin.unload()
         self.plugins = []
 
     def loadPlugin(self, modname):
+        '''
+        Load plugin
+        '''
         module = __import__(modname, fromlist='dummy')
         imp.reload(module)
         for name, obj in inspect.getmembers(module):
@@ -400,6 +426,9 @@ class TS3Bot():
                 self.plugins.append(plugin)
 
     def loadAllPlugins(self):
+        '''
+        Load all plugins
+        '''
         print('Loading plugins...')
         prefix = plugins.__name__ + '.'
         for importer, modname, ispkg in pkgutil.iter_modules(plugins.__path__, prefix):
@@ -407,9 +436,13 @@ class TS3Bot():
             self.loadPlugin(modname)
 
     def reloadPlugins(self):
+        '''
+        Reload all plugins (unload -> load)
+        '''
         print('Reloading plugins...')
         self.unloadPlugins()
         self.loadAllPlugins()
+        self.registerNotify('notifytextmessage', self.messageFindCommand)
 
     # notifiy and event functions
 
@@ -461,6 +494,9 @@ class TS3Bot():
         self.LastCommand = time.time()
         self.Lock.release()
 
+    def unregisterAllNotifys(self):
+        self.RegisteredNotifys = []
+
     def notifyAll(self, func):
         self.Lock.acquire()
 
@@ -482,11 +518,10 @@ class TS3Bot():
         self.command('servernotifyunregister')
 
     # start function (start the bot working)
-    def startBot(self, login_name, login_password, virtualserver_id=1):
-        # connect to the server and login
-        self.connect()
-        self.login(login_name, login_password)
-        self.use(virtualserver_id)
+    def startLoop(self):
+        '''
+        Load plugins, register events and start main loop
+        '''
 
         self.loadAllPlugins()
 

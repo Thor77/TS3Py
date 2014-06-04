@@ -7,6 +7,7 @@ class Help(Plugin):
         self.call = self.bot.call
         # commands
         self.addCommand('help', self.help_func, 'Show commandlist')
+        self.addCommand('reload', self.reload_func, 'Reload plugins')
 
     def help_func(self, params, client_id, client_name):
         if len(params) == 0:
@@ -24,3 +25,7 @@ class Help(Plugin):
                 self.sendTextmessageClient(client_id, 'Help about %s:\n%s' % (command, self.commands[command]['help']))
             else:
                 self.sendTextmessageClient(client_id, 'Invalid command! Try \'%shelp\' for a list of commands!' % self.call)
+
+    def reload_func(self, params, client_id, client_name):
+        self.bot.reloadPlugins()
+        self.sendTextmessageClient(client_id, 'Reloaded plugins!')
