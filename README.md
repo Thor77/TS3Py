@@ -13,7 +13,10 @@ Example:
     query_password = ''
     virtualserver_id = 1
     bot = TS3Bot(ip, port)
-    bot.startBot(query_login, query_password, virtualserver_id)
+    bot.connect()
+    bot.login(query_login, query_password)
+    bot.use(virtualserver_id)
+    bot.startLoop()
     
 Known Bugs
 ==========
