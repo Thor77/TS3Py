@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 #
 # Permission is hereby granted, free of charge, to any person obtaining a
-# copy of this software and associated documentation files (the \"Software\"),
+# copy of this software and associated documentation files (the \'Software\'),
 # to deal in the Software without restriction, including without limitation
 # the rights to use, copy, modify, merge, publish, distribute, sublicense,
 # and/or sell copies of the Software, and to permit persons to whom the
@@ -11,7 +11,7 @@
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
 #
-# THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# THE SOFTWARE IS PROVIDED \'AS IS\', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
 # THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -37,27 +37,29 @@ class TS3Error(Exception):
         self.msg = msg
 
     def __str__(self):
-        return "ID %s (%s)" % (self.code, self.msg)
+        return 'ID %s (%s)' % (self.code, self.msg)
 
 
-class TS3Bot():
-    TSRegex = re.compile(r"(\w+)=(.*?)(\s|$|\|)")
+class TS3Query:
+    TSRegex = re.compile(r'(\w+)=(.*?)(\s|$|\|)')
 
-    def __init__(self, ip='127.0.0.1', query=10011, call='!'):
-        """
+    def __init__(self, ip='127.0.0.1', query=10011):
+        '''
         This class contains functions to connecting a TS3 Query Port and send
         command.
         @param ip: IP adress of the TS3 Server
         @type ip: str
         @param query: Query Port of the TS3 Server. Default 10011
         @type query: int
-        """
+        '''
         self.IP = ip
         self.Query = int(query)
         self.Timeout = 5.0
+
+        # escape
         self.ts3_escape = [
         (chr(92), r'\\'), # \
-        (chr(47), r"\/"), # /
+        (chr(47), r'\/'), # /
         (chr(32), r'\s'), # Space
         (chr(124), r'\p'), # |
         (chr(7), r'\a'), # Bell
@@ -68,24 +70,12 @@ class TS3Bot():
         (chr(9), r'\t'), # Horizontal Tab
         (chr(11), r'\v'), # Vertical tab
         ]
-        # server notifications things
-        self.LastCommand = 0
-        self.Lock = _thread.allocate_lock()
-        self.RegisteredNotifys = []
-        self.RegisteredEvents = []
-        _thread.start_new_thread(self.worker, ())
-        self.notifyAllactivated = False
-        self.notifyAll_func = None
-        # command and plugin variables
-        self.commands = {}
-        self.call = call
-        self.plugins = []
 
     def connect(self):
-        """
+        '''
         Open a link to the Teamspeak 3 query port
         @return: A tulpe with a error code. Example: ('error', 0, 'ok')
-        """
+        '''
         try:
             self.telnet = telnetlib.Telnet(self.IP, self.Query)
         except telnetlib.socket.error:
@@ -97,21 +87,21 @@ class TS3Bot():
             return True
 
     def disconnect(self):
-        """
+        '''
         Close the link to the Teamspeak 3 query port
         @return: ('error', 0, 'ok')
-        """
+        '''
         self.telnet.write('quit \n')
         self.telnet.close()
         return True
 
     def escapeString(self, value):
-        """
+        '''
         Escape a value into a TS3 compatible string
 
         @param value: Value
         @type value: string/int
-        """
+        '''
 
         if isinstance(value, int):
             return str(value)
@@ -122,13 +112,13 @@ class TS3Bot():
         return value
 
     def unescapeString(self, value):
-        """
+        '''
         Unescape a TS3 compatible string into a normal string
 
         @param value: Value
         @type value: string/int
 
-        """
+        '''
 
         if isinstance(value, int):
             return str(value)
@@ -139,7 +129,7 @@ class TS3Bot():
         return value
 
     def command(self, cmd, parameter={}, option=[]):
-        """
+        '''
         Send a command with paramters and options to the TS3 Query.
         @param cmd: The command who wants to send.
         @type cmd: str
@@ -149,38 +139,35 @@ class TS3Bot():
         @param option: A list with options. Example: –uid --> ['uid']
         @type option: list
         @return: The answer of the server as tulpe with error code and message.
-        """
+        '''
         telnetCMD = cmd
         for key in parameter:
-            telnetCMD += " %s=%s" % (key, self.escapeString(parameter[key]))
+            telnetCMD += ' %s=%s' % (key, self.escapeString(parameter[key]))
         for i in option:
-            telnetCMD += " -%s" % (i)
+            telnetCMD += ' -%s' % (i)
         telnetCMD += '\n'
         self.telnet.write(telnetCMD.encode())
 
-        telnetResponse = self.telnet.read_until("msg=ok".encode(), self.Timeout)
+        telnetResponse = self.telnet.read_until('msg=ok'.encode(), self.Timeout)
         telnetResponse = telnetResponse.decode()
         telnetResponse = telnetResponse.split(r'error id=')
-        notParsedCMDStatus = "id=" + telnetResponse[1]
+        notParsedCMDStatus = 'id=' + telnetResponse[1]
         notParsedInfo = telnetResponse[0].split('|')
 
-        if (cmd.endswith("list") == True) or (len(notParsedInfo) > 1):
+        if (cmd.endswith('list') == True) or (len(notParsedInfo) > 1):
             returnInfo = []
             for notParsedInfoLine in notParsedInfo:
                 ParsedInfo = self.TSRegex.findall(notParsedInfoLine)
+                print(ParsedInfo)
                 ParsedInfoDict = {}
                 for ParsedInfoKey in ParsedInfo:
-                    ParsedInfoDict[ParsedInfoKey[0]] = self.unescapeString(
-                        ParsedInfoKey[1])
+                    ParsedInfoDict[ParsedInfoKey[0]] = self.unescapeString(ParsedInfoKey[1])
                 returnInfo.append(ParsedInfoDict)
-
         else:
             returnInfo = {}
             ParsedInfo = self.TSRegex.findall(notParsedInfo[0])
             for ParsedInfoKey in ParsedInfo:
-                returnInfo[ParsedInfoKey[0]] = self.unescapeString(
-                    ParsedInfoKey[1])
-
+                returnInfo[ParsedInfoKey[0]] = self.unescapeString(ParsedInfoKey[1])
         ReturnCMDStatus = {}
         ParsedCMDStatus = self.TSRegex.findall(notParsedCMDStatus)
         for ParsedCMDStatusLine in ParsedCMDStatus:
@@ -362,6 +349,63 @@ class TS3Bot():
     def changeSelfNick(self, new_name):
         self.command('clientupdate', {'client_nickname': new_name})
 
+    # notify functions
+    def registerNotify(self, notify, func):
+        notify2func = {'notify': notify, 'func': func}
+
+        self.Lock.acquire()
+        self.RegisteredNotifys.append(notify2func)
+        self.LastCommand = time.time()
+        self.Lock.release()
+
+    def unregisterNotify(self, notify, func):
+        notify2func = {'notify': notify, 'func': func}
+
+        self.Lock.acquire()
+        self.RegisteredNotifys.remove(notify2func)
+        self.LastCommand = time.time()
+        self.Lock.release()
+
+    def unregisterAllNotifys(self):
+        self.RegisteredNotifys = []
+
+    def notifyAll(self, func):
+        self.Lock.acquire()
+
+        self.notifyAllactivated = True
+        self.notifyAll_func = func
+
+        self.LastCommand = time.time()
+        self.Lock.release()
+
+    # event functions
+    def registerEvent(self, eventName, parameter={}, option=[]):
+        parameter['event'] = eventName
+        self.RegisteredEvents.append(eventName)
+        self.command('servernotifyregister', parameter, option)
+        self.Lock.acquire()
+        self.LastCommand = time.time()
+        self.Lock.release()
+
+    def unregisterEvent(self):
+        self.command('servernotifyunregister')
+
+class TS3Bot(TS3Query):
+    def __init__(self, ip, port, call='!'):
+        TS3Query.__init__(self, ip, port)
+        # server notifications things
+        self.LastCommand = 0
+        self.Lock = _thread.allocate_lock()
+        self.RegisteredNotifys = []
+        self.RegisteredEvents = []
+        _thread.start_new_thread(self.worker, ())
+        self.notifyAllactivated = False
+        self.notifyAll_func = None
+        # command and plugin variables
+        self.commands = {}
+        self.call = call
+        self.plugins = []
+
     # command functions
     def gotCommand(self, command, params, client_id, client_name):
         '''
@@ -445,7 +489,6 @@ class TS3Bot():
         self.registerNotify('notifytextmessage', self.messageFindCommand)
 
     # notifiy and event functions
-
     def worker(self):
         while True:
             self.Lock.acquire()
@@ -478,47 +521,8 @@ class TS3Bot():
                         RegisteredNotify['func'](notifyName, notifyData)
             time.sleep(0.2)
 
-    def registerNotify(self, notify, func):
-        notify2func = {'notify': notify, 'func': func}
-
-        self.Lock.acquire()
-        self.RegisteredNotifys.append(notify2func)
-        self.LastCommand = time.time()
-        self.Lock.release()
-
-    def unregisterNotify(self, notify, func):
-        notify2func = {'notify': notify, 'func': func}
-
-        self.Lock.acquire()
-        self.RegisteredNotifys.remove(notify2func)
-        self.LastCommand = time.time()
-        self.Lock.release()
-
-    def unregisterAllNotifys(self):
-        self.RegisteredNotifys = []
-
-    def notifyAll(self, func):
-        self.Lock.acquire()
-
-        self.notifyAllactivated = True
-        self.notifyAll_func = func
-
-        self.LastCommand = time.time()
-        self.Lock.release()
-
-    def registerEvent(self, eventName, parameter={}, option=[]):
-        parameter['event'] = eventName
-        self.RegisteredEvents.append(eventName)
-        self.command('servernotifyregister', parameter, option)
-        self.Lock.acquire()
-        self.LastCommand = time.time()
-        self.Lock.release()
-
-    def unregisterEvent(self):
-        self.command('servernotifyunregister')
-
     # start function (start the bot working)
-    def startLoop(self):
+    def start(self):
         '''
         Load plugins, register events and start main loop
         '''
