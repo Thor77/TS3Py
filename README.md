@@ -20,4 +20,4 @@ Example:
     
 Known Bugs
 ==========
-Commands with arguments doesnt work!
+Missing documentation

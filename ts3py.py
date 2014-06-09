@@ -152,31 +152,42 @@ class TS3Query:
         telnetResponse = telnetResponse.decode()
         telnetResponse = telnetResponse.split(r'error id=')
         notParsedCMDStatus = 'id=' + telnetResponse[1]
-        notParsedInfo = telnetResponse[0].split('|')
+        notParsedInfo = telnetResponse[0]
 
-        if (cmd.endswith('list') == True) or (len(notParsedInfo) > 1):
-            returnInfo = []
-            for notParsedInfoLine in notParsedInfo:
-                ParsedInfo = self.TSRegex.findall(notParsedInfoLine)
-                print(ParsedInfo)
-                ParsedInfoDict = {}
-                for ParsedInfoKey in ParsedInfo:
-                    ParsedInfoDict[ParsedInfoKey[0]] = self.unescapeString(ParsedInfoKey[1])
-                returnInfo.append(ParsedInfoDict)
-        else:
-            returnInfo = {}
-            ParsedInfo = self.TSRegex.findall(notParsedInfo[0])
-            for ParsedInfoKey in ParsedInfo:
-                returnInfo[ParsedInfoKey[0]] = self.unescapeString(ParsedInfoKey[1])
-        ReturnCMDStatus = {}
-        ParsedCMDStatus = self.TSRegex.findall(notParsedCMDStatus)
-        for ParsedCMDStatusLine in ParsedCMDStatus:
-            ReturnCMDStatus[ParsedCMDStatusLine[0]] = self.unescapeString(
-                ParsedCMDStatusLine[1])
-        if ReturnCMDStatus['id'] != '0':
-            raise TS3Error(ReturnCMDStatus['id'], ReturnCMDStatus['msg'])
+        returnInfo = self.parseInfo(notParsedInfo)
+        status = self.parseStatus(notParsedCMDStatus)
+        #print(status)
 
         return returnInfo
+
+    def parseInfo(self, notParsedInfo):
+        # split lines
+        notParsedInfo = notParsedInfo.split('|')
+        if len(notParsedInfo) > 1:
+            returnInfo = []
+            for line in notParsedInfo:
+                parsed = self.TSRegex.findall(line)
+                infoDict = {}
+                for key in parsed:
+                    infoDict[key[0]] = self.unescapeString(key[1])
+                returnInfo.append(infoDict)
+        else:
+            returnInfo = {}
+            parsed = self.TSRegex.findall(notParsedInfo[0])
+            for key in parsed:
+                returnInfo[key[0]] = self.unescapeString(key[1])
+
+        return returnInfo
+
+    def parseStatus(self, notParsedStatus):
+        status = {}
+        parsed = self.TSRegex.findall(notParsedStatus)
+        for line in parsed:
+            status[line[0]] = self.unescapeString(line[1])
+        if status['id'] != '0':
+            raise TS3Error(status['id'], status['msg'])
+        else:
+            return status
 
     # select virtual server
     def use(self, virtualserver):
@@ -444,8 +455,9 @@ class TS3Bot(TS3Query):
         msg = data['msg']
         msg = msg.strip()
         if msg[:len(self.call)]:
+            command = msg[len(self.call):].split(' ')[0]
             params = msg.split(' ')[1:]
-            self.gotCommand(msg[len(self.call):], params, data['invokerid'], data['invokername'])
+            self.gotCommand(command, params, data['invokerid'], data['invokername'])
 
     # plugin functions
     def unloadPlugins(self):
@@ -503,16 +515,17 @@ class TS3Bot(TS3Query):
                 self.LastCommand = time.time()
                 self.Lock.release()
             telnetResponse = self.telnet.read_until('\n'.encode(), 0.1).decode('utf-8')
-            telnetResponse = self.unescapeString(telnetResponse)
             if telnetResponse.startswith('notify'):
                 notifyName = telnetResponse.split(' ')[0]
+                '''
                 ParsedInfo = self.TSRegex.findall(telnetResponse)
-                #print(ParsedInfo)
-                #print(telnetResponse)
                 notifyData = {}
                 for ParsedInfoKey in ParsedInfo:
-                    notifyData[ParsedInfoKey[0]] = self.escapeString(
-                        ParsedInfoKey[1])
+                    escaped = self.escapeString(ParsedInfoKey[1])
+                    print(escaped)
+                    notifyData[ParsedInfoKey[0]] = self.escapeString(escaped)
+                '''
+                notifyData = self.parseInfo(telnetResponse)
                 if self.notifyAllactivated:
                     self.notifyAll_func(notifyName, notifyData)
                     continue
