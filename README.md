@@ -1,12 +1,13 @@
-TS3Py
+TS3Bot
 =====
 
-A Python TS3-Lib
+A TS3-Bot build with my TS3-Query-API, TS3Py (look at the master-branch).
+
 The \_\_init\_\_-File
 =====================
 Example:
   
-    from pyts3 import TS3Bot  
+    from ts3bot import TS3Bot  
     ip = ''
     port = 00000
     query_login = ''
