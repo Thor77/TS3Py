@@ -2,6 +2,10 @@ TS3Py
 =====
 
 A Python TS3-Lib
+
+You want to build a TS3-Bot with this API?
+Look at the bot-branch, i've build a plugin-bot!
+
 The \_\_init\_\_-File
 =====================
 Example:
