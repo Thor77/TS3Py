@@ -3,6 +3,15 @@ TS3Py
 
 A Python TS3-Lib
 
+"Installation"
+==============
+- Clone the repo
+
+    git clone https://github.com/Thor77/TS3Py.git
+    
+- Copy the ts3py.py-file to the location, where you need it
+- Be happy
+
 Example usage
 =============
 Get channellist:
@@ -23,4 +32,5 @@ Get channellist:
     
 Known Bugs
 ==========
-Missing documentation
+- Missing documentation
+- setup.py doesnt work
