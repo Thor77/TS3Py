@@ -1,0 +1,39 @@
+Metadata-Version: 1.0
+Name: TS3Py
+Version: 0.0.1
+Summary: A python TS3Query-API
+Home-page: https://github.com/Thor77/TS3py
+Author: Thor77
+Author-email: thor77@xthor77.tk
+License: UNKNOWN
+Description: TS3Py
+        =====
+        
+        A Python TS3-Lib
+        
+        You want to build a TS3-Bot with this API?
+        Look at the bot-branch, i've build a plugin-bot!
+        
+        Example usage
+        =============
+        Get channellist:
+          
+            from pyts3 import TS3Query  
+            ip = ''
+            port = 00000
+            query_login = ''
+            query_password = ''
+            virtualserver_id = 1
+            connection = TS3Query(ip, port)
+            connection.connect()
+            connection.login(query_login, query_password)
+            connection.use(virtualserver_id)
+            channellist = connection.getChannellist()
+            for channel_id in channellist:
+                print('Channel-ID: %s Channel-Name: %s' % (channel_id, channellist[channel_id]))
+            
+        Known Bugs
+        ==========
+        Missing documentation
+Keywords: ts3 pyts3 ts3py
+Platform: UNKNOWN
