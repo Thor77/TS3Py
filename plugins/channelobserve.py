@@ -8,7 +8,7 @@ class Channelobserve(Plugin):
         self.stopFlag = Event()
         self.observer_thread = Observer(self.stopFlag, self.observe, 20)
         self.observer_thread.start()
-        self.blocklist = ['führer', 'konzentration', 'lager', '']
+        self.blocklist = ['führer', 'konzentration', 'lager']
         # commands
 
     def observe(self):
