@@ -12,7 +12,7 @@ class Channelobserve(Plugin):
         # commands
 
     def observe(self):
-        channellist = self.getChannellist()
+        channellist = self.bot.getChannellist()
         for cid in channellist:
             channelname = channellist[cid].lower()
             for string in self.blocklist:
