@@ -1,4 +1,5 @@
 setup.py
+ts3py.py
 TS3Py.egg-info/PKG-INFO
 TS3Py.egg-info/SOURCES.txt
 TS3Py.egg-info/dependency_links.txt
