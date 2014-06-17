@@ -3,14 +3,10 @@ TS3Py
 
 A Python TS3-Lib
 
-"Installation"
+Installation
 ==============
-- Clone the repo
-
-    git clone https://github.com/Thor77/TS3Py.git
-    
-- Copy the ts3py.py-file to the location, where you need it
-- Be happy
+1. Use 'pip install ts3py'
+2. Clone the repo, use 'python setup.py install'
 
 Example usage
 =============
