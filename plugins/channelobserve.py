@@ -12,10 +12,12 @@ class Channelobserve(Plugin):
         # commands
 
     def observe(self):
+        print('observing')
         channellist = self.bot.getChannellist()
         for cid in channellist:
             channelname = channellist[cid].lower()
             for string in self.blocklist:
+                print('String: %s Name: %s' % (string, channelname))
                 if channelname.find(string.lower()) != -1:
                     self.bot.deleteChannel(cid)
 
