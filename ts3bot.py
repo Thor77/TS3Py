@@ -4,6 +4,7 @@ import imp
 import pkgutil
 import inspect
 import plugins
+import time
 from plugin import Plugin
 
 class TS3Bot(TS3Query):
