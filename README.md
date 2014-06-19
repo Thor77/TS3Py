@@ -17,7 +17,7 @@ Example:
     bot.connect()
     bot.login(query_login, query_password)
     bot.use(virtualserver_id)
-    bot.startLoop()
+    bot.start()
     
 Known Bugs
 ==========
