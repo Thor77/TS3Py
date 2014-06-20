@@ -68,21 +68,21 @@ class TS3Bot(TS3Query):
         '''
         Register a command
         '''
-        if cmd not in self.commands:
-            self.commands[cmd] = [func, helpstring]
+        if cmd not in self.registeredCommands:
+            self.registeredCommands[cmd] = [func, helpstring]
 
     def unregisterCommand(self, cmd):
         '''
         Unregister a command
         '''
-        if cmd in self.commands:
-            del self.commands[cmd]
+        if cmd in self.registeredCommands:
+            del self.registeredCommands[cmd]
 
     def unregisterAllCommands(self):
         '''
         Unregister all commands
         '''
-        self.commands = {}
+        self.registeredCommands = {}
 
     def loadPlugin(self, modname):
         '''
@@ -133,8 +133,8 @@ class TS3Bot(TS3Query):
             command = msg[len(self.call):].split(' ')[0]
             params = msg.split(' ')[1:]
             # execute
-            if command in self.commands:
-                self.commands[command][0](params, data['invokerid'], data['invokername'])
+            if command in self.registeredCommands:
+                self.registeredCommands[command][0](params, data['invokerid'], data['invokername'])
 
     def registerDefaults(self):
         '''
