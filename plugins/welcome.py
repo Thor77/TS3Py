@@ -1,22 +1,25 @@
 from plugin import Plugin
+from ts3py import TS3Error
 import time
 
 class Welcome(Plugin):
 
     def onLoad(self):
-        self.registerNotify('notifycliententerview', self.onJoin)
+        # commands and events
+        self.registerEvent('notifycliententerview', self.onClientJoin)
+        print('loaded plugin')
 
-    def onJoin(self, name, data):
+    def onClientJoin(self, data):
         try:
-            if data['client_unique_identifier'] == 'ServerQuery' or data['client_type'] != '0':
+            if data['client_type'] != 0:
                 print('Query-Client joined!')
                 return
         except:
-            print('Error finding client-type!')
-            return
-        database_id = data['client_database_id']
+            raise TS3Error('Got invalid data!')
+
+        dbid = data['client_database_id']
         nick = data['client_nickname']
-        info = self.command('clientdbinfo', {'cldbid': database_id})
+        info = self.command('clientdbinfo', {'cldbid': dbid})
         t = time.gmtime(int(info['client_created']))
         seconds = str(t[5])
         if len(seconds) == 1:
