@@ -6,22 +6,50 @@ import inspect
 import plugins
 import time
 from plugin import Plugin
+import ts3utils
 
 class TS3Bot(TS3Query):
     def __init__(self, ip, port, call='!'):
         TS3Query.__init__(self, ip, port)
         # server notifications things
-        self.LastCommand = 0
-        self.Lock = _thread.allocate_lock()
-        self.RegisteredNotifys = []
-        self.RegisteredEvents = []
+        self.lastCommand = 0
+        self.lock = _thread.allocate_lock()
+        self.registeredNotifys = []
+        self.registeredEvents = []
         _thread.start_new_thread(self.worker, ())
-        self.notifyAllactivated = False
-        self.notifyAll_func = None
         # command and plugin variables
         self.commands = {}
         self.call = call
         self.plugins = []
+
+    def registerNotify(self, notify, func):
+        notify_dict = {'notify': notify, 'func': func}
+
+        self.lock.acquire()
+        self.registeredNotifys.append(notify_dict)
+        self.lastCommand = time.time()
+        self.lock.release()
+
+    def unregisterNotify(self, notify, func):
+        notify_dict = {'notify': notify, 'func': func}
+
+        self.lock.acquire()
+        self.registeredNotifys.remove(notify_dict)
+        self.lastCommand = time.time()
+        self.lock.release()
+
+    def unregisterAllNotifys(self):
+        self.registeredNotifys = []
+
+    def registerEvent(self, event_name):
+        self.registeredEvents.append(event_name)
+        self.command('servernotifyregister', {'event': event_name})
+        self.lock.acquire()
+        self.lastCommand = time.time()
+        self.lock.release()
+
+    def unregisterEvents(self):
+        self.command('servernotifyunregister')
 
     # command functions
     def gotCommand(self, command, params, client_id, client_name):
@@ -106,38 +134,27 @@ class TS3Bot(TS3Query):
         self.loadAllPlugins()
         self.registerNotify('notifytextmessage', self.messageFindCommand)
 
-    # notifiy and event functions
+    # thread function (waiting for events)
     def worker(self):
         while True:
-            self.Lock.acquire()
-            RegisteredNotifys = self.RegisteredNotifys
-            LastCommand = self.LastCommand
-            self.Lock.release()
-            if len(RegisteredNotifys) == 0 and not self.notifyAllactivated:
+            self.lock.acquire()
+            registeredNotifys = self.registeredNotifys
+            lastCommand = self.lastCommand
+            self.lock.release()
+            if len(registeredNotifys) == 0:
                 continue
-            if LastCommand < time.time() - 180:
+            if lastCommand < time.time() - 180:
                 self.command('version')
-                self.Lock.acquire()
-                self.LastCommand = time.time()
-                self.Lock.release()
-            telnetResponse = self.telnet.read_until('\n'.encode(), 0.1).decode('utf-8')
+                self.lock.acquire()
+                self.lastCommand = time.time()
+                self.lock.release()
+            telnetResponse = self.telnet.read_until('\r\n'.encode(), 0.1).decode()
             if telnetResponse.startswith('notify'):
                 notifyName = telnetResponse.split(' ')[0]
-                '''
-                ParsedInfo = self.TSRegex.findall(telnetResponse)
-                notifyData = {}
-                for ParsedInfoKey in ParsedInfo:
-                    escaped = self.escapeString(ParsedInfoKey[1])
-                    print(escaped)
-                    notifyData[ParsedInfoKey[0]] = self.escapeString(escaped)
-                '''
-                notifyData = self.parseInfo(telnetResponse)
-                if self.notifyAllactivated:
-                    self.notifyAll_func(notifyName, notifyData)
-                    continue
-                for RegisteredNotify in RegisteredNotifys:
-                    if RegisteredNotify['notify'] == notifyName:
-                        RegisteredNotify['func'](notifyName, notifyData)
+                notifyData = ts3utils.parseData(telnetResponse)
+                for registeredNotify in registeredNotifys:
+                    if registeredNotify['notify'] == notifyName:
+                        registeredNotify['func'](notifyName, notifyData)
             time.sleep(0.2)
 
     # start function (start the bot working)

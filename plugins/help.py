@@ -18,14 +18,14 @@ class Help(Plugin):
                 cmddict = self.commands[cmd]
                 helpstring.append('%s -> %s' % (cmd, cmddict['help']))
             helpstring.append('\n\nUse %shelp \'command\' to get help about a specific command!' % self.call)
-            self.sendTextmessageClient(client_id, '\n'.join(helpstring))
+            self.sendtextmessageClient(client_id, '\n'.join(helpstring))
         else:
             command = params[0]
             if command in self.commands:
-                self.sendTextmessageClient(client_id, 'Help about %s:\n%s' % (command, self.commands[command]['help']))
+                self.sendtextmessageClient(client_id, 'Help about %s:\n%s' % (command, self.commands[command]['help']))
             else:
-                self.sendTextmessageClient(client_id, 'Invalid command! Try \'%shelp\' for a list of commands!' % self.call)
+                self.sendtextmessageClient(client_id, 'Invalid command! Try \'%shelp\' for a list of commands!' % self.call)
 
     def reload_func(self, params, client_id, client_name):
         self.bot.reloadPlugins()
-        self.sendTextmessageClient(client_id, 'Reloaded plugins!')
+        self.sendtextmessageClient(client_id, 'Reloaded plugins!')

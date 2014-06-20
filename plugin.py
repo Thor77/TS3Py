@@ -10,22 +10,22 @@ class Plugin:
     def addCommand(self, trg, func, helpstring):
         self.bot.addCommand(trg, func, helpstring)
 
-    def sendTextmessageClient(self, target_id, msg):
-        self.bot.sendTextmessageClient(target_id, msg)
+    def sendtextmessageClient(self, target_id, msg):
+        self.bot.sendtextmessageClient(target_id, msg)
 
-    def sendTextmessageChannel(self, target_id, msg):
-        self.bot.sendTextmessageChannel(target_id, msg)
+    def sendtextmessageChannel(self, target_id, msg):
+        self.bot.sendtextmessageChannel(target_id, msg)
 
-    def sendTextmessageServer(self, target_id, msg):
-        self.bot.sendTextmessageServer(target_id, msg)
+    def sendtextmessageServer(self, target_id, msg):
+        self.bot.sendtextmessageServer(target_id, msg)
 
-    def poke(self, target_id, msg):
-        self.bot.poke(target_id, msg)
+    def clientpoke(self, target_id, msg):
+        self.bot.clientpoke(target_id, msg)
 
     def registerNotify(self, notify_name, func):
         self.bot.registerNotify(notify_name, func)
 
-    def sendCommand(self, cmd, parameter={}, options=[]):
+    def command(self, cmd, parameter={}, options=[]):
         return self.bot.command(cmd, parameter, options)
 
     def unload(self):

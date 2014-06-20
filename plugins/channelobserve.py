@@ -7,19 +7,20 @@ class Channelobserve(Plugin):
     def onLoad(self):
         self.stopFlag = Event()
         self.observer_thread = Observer(self.stopFlag, self.observe, 20)
-        self.observer_thread.start()
+        #self.observer_thread.start()
         self.blocklist = ['führer', 'konzentration', 'lager']
         # commands
 
     def observe(self):
         print('observing')
-        channellist = self.bot.getChannellist()
+        channellist = self.bot.channellist()
         for cid in channellist:
-            channelname = channellist[cid].lower()
+            channelname = channellist[cid]['channel_name'].lower()
+            channeltopic = channellist[cid]['channel_topic'].lower()
             for string in self.blocklist:
                 print('String: %s Name: %s' % (string, channelname))
-                if channelname.find(string.lower()) != -1:
-                    self.bot.deleteChannel(cid)
+                if channelname.find(string.lower()) != -1 or channeltopic.find(string.lower()) != -1:
+                    self.bot.channeldelete(cid)
 
     def onUnload(self):
         self.stopFlag.set()
