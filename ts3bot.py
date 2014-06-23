@@ -168,7 +168,7 @@ class TS3Bot(TS3Query):
         self.startLoop()
     
     def keepAlive(self):
-        threading.Timer(300.0, self.keepAlive).start()
+        threading.Timer(self.keepAliveInterval, self.keepAlive).start()
         self.command('whoami')
     
     def startLoop(self):
