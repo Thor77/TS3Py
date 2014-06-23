@@ -29,4 +29,7 @@ Get channellist:
 Known Bugs
 ==========
 - Missing documentation
-- setup.py doesnt work
+
+Todo
+====
+- Improve plugin system
