@@ -11,6 +11,6 @@ setup(
     keywords = 'ts3 pyts3 ts3py',
     url = 'https://github.com/Thor77/TS3py',
     long_description = 'A TS3Query-API. \r\n Look at the doc or the github-page for further information!',
-    py_modules = ['ts3py'],
+    py_modules = ['ts3py', 'ts3utils'],
 
 )
