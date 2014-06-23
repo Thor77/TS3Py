@@ -29,7 +29,7 @@ class TS3Response:
         status = raw_status.replace('error ', '')
         parsed = ts3utils.parseData(status)
         if parsed['id'] != 0:
-            raise TS3Error(parsed['msg'], parsed['id'])
+            print(TS3Error(parsed['msg'], parsed['id']))
 
     def getData(self):
         return self.data
