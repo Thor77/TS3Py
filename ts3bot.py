@@ -4,6 +4,7 @@ from plugin import Plugin
 import plugins
 import ts3utils
 import time
+import threading
 
 import imp
 import inspect
@@ -16,6 +17,8 @@ class TS3Bot(TS3Query):
         self.registeredNotifys = []
         self.registeredEvents = {}
         self.registeredCommands = {}
+        self.keepAliveInterval = 300.0
+        self.timeSleep = 0.5
         self.plugins = []
         self.call = call
 
@@ -161,11 +164,15 @@ class TS3Bot(TS3Query):
         self.loadPlugins()
         # start main loop
         print('starting...')
+        self.keepAlive()
         self.startLoop()
-
+    
+    def keepAlive(self):
+        threading.Timer(self.keepAliveInterval, self.keepAlive).start()
+        self.command('whoami')
+    
     def startLoop(self):
         while True:
-            time.sleep(0.5)
             response = '!=notify'
             while response[:6] != 'notify':
                 response = self.telnet.read_until('\n\r'.encode()).decode().strip()
@@ -176,3 +183,4 @@ class TS3Bot(TS3Query):
                 functions = self.registeredEvents[notify_name]
                 for func in functions:
                     func(parsed)
+            time.sleep(self.timeSleep)
