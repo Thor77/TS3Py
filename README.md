@@ -5,8 +5,7 @@ A Python TS3-Lib
 
 Installation
 ==============
-1. Use 'pip install ts3py'
-2. Clone the repo, use 'python setup.py install'
+Clone the repo and use 'python setup.py install'
 
 Example usage
 =============
