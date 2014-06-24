@@ -51,7 +51,7 @@ class TS3Server:
         # connect
         self.telnet = telnetlib.Telnet(ip, port)
         # check
-        if self.telnet.read_until('TS3'.encode(), self.timeout)[3:].decode() == 'TS3':
+        if self.telnet.read_until('TS3'.encode(), self.timeout)[3:].decode('UTF-8', 'ignore') == 'TS3':
             raise TS3Error('No Teamspeak3-Server on %s:%s!' % (ip, port))
         self.connected = True
 
@@ -74,7 +74,7 @@ class TS3Server:
         response = '!=error'
         lines = []
         while response[:5] != 'error':
-            response = self.telnet.read_until('\n\r'.encode()).decode().strip()
+            response = self.telnet.read_until('\n\r'.encode()).decode('UTF-8', 'ignore').strip()
             lines.append(response)
         status = lines[-1]
         if len(lines) > 1:
