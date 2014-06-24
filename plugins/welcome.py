@@ -7,7 +7,6 @@ class Welcome(Plugin):
     def onLoad(self):
         # commands and events
         self.registerEvent('notifycliententerview', self.onClientJoin)
-        print('loaded plugin')
 
     def onClientJoin(self, data):
         try:
