@@ -175,7 +175,7 @@ class TS3Bot(TS3Query):
         while True:
             response = '!=notify'
             while response[:6] != 'notify':
-                response = self.telnet.read_until('\n\r'.encode()).decode().strip()
+                response = self.telnet.read_until('\n\r'.encode()).decode('UTF-8', 'ignore').strip()
             notify_name = response.split(' ')[0].strip()
             data = response.replace('%s ' % notify_name, '', 1)
             parsed = ts3utils.parseData(data)
