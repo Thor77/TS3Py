@@ -4,7 +4,6 @@ from plugin import Plugin
 import plugins
 import ts3utils
 import time
-import threading
 
 import imp
 import inspect
@@ -17,10 +16,11 @@ class TS3Bot(TS3Query):
         self.registeredNotifys = []
         self.registeredEvents = {}
         self.registeredCommands = {}
-        self.timeSleep = 0.5
+        self.loopDelay = 0.5
         self.plugins = []
         self.call = call
         self.timeSinceLastCommand = 0
+        self.waiting = False
 
     def servernotifyregister(self, event):
         '''
@@ -165,27 +165,33 @@ class TS3Bot(TS3Query):
         # start main loop
         print('starting...')
         self.startLoop()
-    
+
     def startLoop(self):
         while True:
-            if self.timeSinceLastCommand < time.time() - 180:
-                self.command('version')
-                self.timeSinceLastCommand = time.time()
-            # event loop
-            response = '!=notify'
-            while response[:6] != 'notify':
+            self.listen()
+
+    def listen(self):
+        if self.timeSinceLastCommand < time.time() - 180:
+            self.command('version')
+            self.timeSinceLastCommand = time.time()
+        # event loop
+        response = '!=notify'
+        while response[:6] != 'notify':
+            if not self.waiting:
                 response = self.telnet.read_until('\n\r'.encode()).decode('UTF-8', 'ignore').strip()
-            notify_name = response.split(' ')[0].strip()
-            data = response.replace('%s ' % notify_name, '', 1)
-            parsed = ts3utils.parseData(data)
-            if notify_name in self.registeredEvents:
-                functions = self.registeredEvents[notify_name]
-                for func in functions:
-                    func(parsed)
-            time.sleep(self.timeSleep)
+        notify_name = response.split(' ')[0].strip()
+        data = response.replace('%s ' % notify_name, '', 1)
+        parsed = ts3utils.parseData(data)
+        if notify_name in self.registeredEvents:
+            functions = self.registeredEvents[notify_name]
+            for func in functions:
+                func(parsed)
+        time.sleep(self.loopDelay)
 
     # overwrite command-function
     def command(self, cmd, params={}, options=[]):
         self.timeSinceLastCommand = time.time()
-        print('command: %s' % cmd)
-        return TS3Query.command(self, cmd, params, options)
+        self.waiting = True
+        response = TS3Query.command(self, cmd, params, options)
+        self.waiting = False
+        return response
