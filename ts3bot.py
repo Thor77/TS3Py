@@ -17,10 +17,10 @@ class TS3Bot(TS3Query):
         self.registeredNotifys = []
         self.registeredEvents = {}
         self.registeredCommands = {}
-        self.keepAliveInterval = 300.0
         self.timeSleep = 0.5
         self.plugins = []
         self.call = call
+        self.timeSinceLastCommand = 0
 
     def servernotifyregister(self, event):
         '''
@@ -123,8 +123,8 @@ class TS3Bot(TS3Query):
         Reload plugins
         '''
         self.unloadPlugins()
-        self.loadPlugins()
         self.registerDefaults()
+        self.loadPlugins()
 
     def findCommand(self, data):
         '''
@@ -152,7 +152,7 @@ class TS3Bot(TS3Query):
 
         # register events
         self.registerEvent('notifytextmessage', self.findCommand)
-        print('registered events...')        
+        print('registered events...')     
 
     def start(self):
         '''
@@ -164,15 +164,14 @@ class TS3Bot(TS3Query):
         self.loadPlugins()
         # start main loop
         print('starting...')
-        self.keepAlive()
         self.startLoop()
-    
-    def keepAlive(self):
-        threading.Timer(self.keepAliveInterval, self.keepAlive).start()
-        self.command('whoami')
     
     def startLoop(self):
         while True:
+            if self.timeSinceLastCommand < time.time() - 180:
+                self.command('version')
+                self.timeSinceLastCommand = time.time()
+            # event loop
             response = '!=notify'
             while response[:6] != 'notify':
                 response = self.telnet.read_until('\n\r'.encode()).decode('UTF-8', 'ignore').strip()
@@ -184,3 +183,9 @@ class TS3Bot(TS3Query):
                 for func in functions:
                     func(parsed)
             time.sleep(self.timeSleep)
+
+    # overwrite command-function
+    def command(self, cmd, params={}, options=[]):
+        self.timeSinceLastCommand = time.time()
+        print('command: %s' % cmd)
+        return TS3Query.command(self, cmd, params, options)
