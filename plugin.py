@@ -56,7 +56,7 @@ class Plugin:
         self.bot.clientpoke(target_id, msg)
 
     def unload(self):
-        if hasattr(self, 'onUnload') and inspect.ismethod(getattr, 'onUnload'):
+        if hasattr(self, 'onUnload') and inspect.ismethod(getattr(self, 'onUnload')):
             self.onUnload()
 
     def getName(self):
