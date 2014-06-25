@@ -23,6 +23,7 @@ class Observer(Plugin):
                 if cname.find(string) != -1 or ctopic.find(string) != -1:
                     self.bot.channeldelete(channel)
                     print('Channel %s deleted because "%s"!' % (cname, string))
+                    break
 
     def onUnload(self):
         self.funcThread.stop()
