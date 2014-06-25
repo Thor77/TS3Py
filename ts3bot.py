@@ -4,6 +4,9 @@ from plugin import Plugin
 import plugins
 import ts3utils
 import time
+import sys
+
+from threading import Thread, Event
 
 import imp
 import inspect
@@ -20,7 +23,7 @@ class TS3Bot(TS3Query):
         self.plugins = []
         self.call = call
         self.timeSinceLastCommand = 0
-        self.waiting = False
+        self.awaitingReponse = False
 
     def servernotifyregister(self, event):
         '''
@@ -36,7 +39,7 @@ class TS3Bot(TS3Query):
         '''
         Unregister all notifys
         '''
-        if len(self.notifyRegistered) > 0:
+        if len(self.registeredNotifys) > 0:
             self.command('servernotifyunregister')
 
     def registerEvent(self, eventname, func):
@@ -168,7 +171,10 @@ class TS3Bot(TS3Query):
 
     def startLoop(self):
         while True:
-            self.listen()
+            try:
+                self.listen()
+            except KeyboardInterrupt:
+                self.quit()
 
     def listen(self):
         if self.timeSinceLastCommand < time.time() - 180:
@@ -177,8 +183,8 @@ class TS3Bot(TS3Query):
         # event loop
         response = '!=notify'
         while response[:6] != 'notify':
-            if not self.waiting:
-                response = self.telnet.read_until('\n\r'.encode()).decode('UTF-8', 'ignore').strip()
+            if not self.awaitingReponse:
+                response = self.telnet.read_until('\n\r'.encode(), 0).decode('UTF-8', 'ignore').strip()
         notify_name = response.split(' ')[0].strip()
         data = response.replace('%s ' % notify_name, '', 1)
         parsed = ts3utils.parseData(data)
@@ -191,7 +197,33 @@ class TS3Bot(TS3Query):
     # overwrite command-function
     def command(self, cmd, params={}, options=[]):
         self.timeSinceLastCommand = time.time()
-        self.waiting = True
+        self.awaitingReponse = True
         response = TS3Query.command(self, cmd, params, options)
-        self.waiting = False
+        self.awaitingReponse = False
         return response
+
+    def quit(self):
+        print('exit')
+        self.unloadPlugins()
+        sys.exit(1)
+
+class FuncThread(Thread):
+    '''
+    Useful if you want to run a function every x seconds
+    function => function
+    x seconds => delay
+    '''
+
+    def __init__(self, function, delay):
+        Thread.__init__(self)
+        self.event = Event()
+        self.function = function
+        self.delay = delay
+        self.daemon = True
+
+    def run(self):
+        while not self.event.wait(self.delay):
+            self.function()
+
+    def stop(self):
+        self.event.set()
