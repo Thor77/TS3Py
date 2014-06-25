@@ -13,8 +13,8 @@ class Welcome(Plugin):
             if data['client_type'] != 0:
                 print('Query-Client joined!')
                 return
-        except:
-            raise TS3Error('Got invalid data!')
+        except KeyError:
+            print(TS3Error('Got invalid data!'))
 
         dbid = data['client_database_id']
         nick = data['client_nickname']
