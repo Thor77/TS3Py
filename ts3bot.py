@@ -198,6 +198,7 @@ class TS3Bot(TS3Query):
     def command(self, cmd, params={}, options=[]):
         self.timeSinceLastCommand = time.time()
         self.awaitingReponse = True
+        time.sleep(0.2)
         response = TS3Query.command(self, cmd, params, options)
         self.awaitingReponse = False
         return response
