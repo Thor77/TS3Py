@@ -12,7 +12,6 @@ class Observer(Plugin):
     def observe(self):
         print('observing...')
         chanlist = self.bot.channellist()
-        print(chanlist)
         for channel in chanlist:
             cname = chanlist[channel]['channel_name'].lower()
             if 'channel_topic' in chanlist[channel]:
