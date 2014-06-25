@@ -18,12 +18,9 @@ class Observer(Plugin):
                 ctopic = chanlist[channel]['channel_topic'].lower()
             else:
                 ctopic = ''
-            for string in self.blocklist:
-                string = string.lower()
-                if cname.find(string) != -1 or ctopic.find(string) != -1:
-                    self.bot.channeldelete(channel)
-                    print('Channel %s deleted because "%s"!' % (cname, string))
-                    break
+            if any(string.lower() in cname or string.lower() in ctopic for string in self.blocklist):
+                self.bot.channeldelete(channel)
+                print('channel %s deleted because "%s"!' % (cname, string))
 
     def onUnload(self):
         self.funcThread.stop()
