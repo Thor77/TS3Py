@@ -24,6 +24,7 @@ class TS3Bot(TS3Query):
         self.call = call
         self.timeSinceLastCommand = 0
         self.awaitingReponse = False
+        self.timeout = 0.2
 
     def servernotifyregister(self, event):
         '''
@@ -184,7 +185,7 @@ class TS3Bot(TS3Query):
         response = '!=notify'
         while response[:6] != 'notify':
             if not self.awaitingReponse:
-                response = self.telnet.read_until('\n\r'.encode(), 0.2).decode('UTF-8', 'ignore').strip()
+                response = self.telnet.read_until('\n\r'.encode(), self.timeout).decode('UTF-8', 'ignore').strip()
         notify_name = response.split(' ')[0].strip()
         data = response.replace('%s ' % notify_name, '', 1)
         parsed = ts3utils.parseData(data)
@@ -198,7 +199,7 @@ class TS3Bot(TS3Query):
     def command(self, cmd, params={}, options=[]):
         self.timeSinceLastCommand = time.time()
         self.awaitingReponse = True
-        time.sleep(0.2)
+        time.sleep(self.timeout)
         response = TS3Query.command(self, cmd, params, options)
         self.awaitingReponse = False
         return response
