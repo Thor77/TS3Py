@@ -25,7 +25,7 @@ class Observer(Plugin):
                 print('channel %s deleted because "%s"!' % (cname, string))
 
     def readBlockFile(self):
-        filename = 'blocked.txt'
+        filename = './blocked.txt'
         f = open(filename)
         for line in f:
             self.blocklist.append(line.strip())
