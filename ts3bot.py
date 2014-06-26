@@ -91,25 +91,29 @@ class TS3Bot(TS3Query):
         '''
         self.registeredCommands = {}
 
-    def loadPlugin(self, modname):
+    def loadPlugin(self, pkgname):
         '''
         Load plugin
         '''
-        module = __import__(modname, fromlist='dummy')
-        imp.reload(module)
-        for name, obj in inspect.getmembers(module):
-            if inspect.isclass(obj) and issubclass(obj, Plugin):
+        package = __import__(pkgname, fromlist='dummy')
+        imp.reload(package)
+        for name, obj in inspect.getmembers(package):
+            if inspect.isclass(obj) and issubclass(obj, Plugin) and obj != Plugin:
                 plugin = obj(self)
                 self.plugins.append(plugin)
+                break
 
     def loadPlugins(self):
         '''
         Load all plugins
         '''
+        plugindir = 'plugins'
+        parent = __import__(plugindir)
         prefix = plugins.__name__ + '.'
-        for importer, modname, ispkg in pkgutil.iter_modules(plugins.__path__, prefix):
+        for importer, modname, ispkg in pkgutil.iter_modules(parent.__path__, prefix):
             del importer
-            self.loadPlugin(modname)
+            if ispkg:
+                self.loadPlugin(modname)
 
     def unloadPlugins(self):
         '''

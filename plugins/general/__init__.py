@@ -1,6 +1,6 @@
 from plugin import Plugin
 
-class Help(Plugin):
+class General(Plugin):
 
     def onLoad(self):
         self.commands = self.bot.registeredCommands
