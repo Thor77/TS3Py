@@ -259,3 +259,9 @@ class TS3Query(TS3Server):
         Change self nickname to new_nick
         '''
         self.command('clientupdate', {'client_nickname': new_nick})
+
+    def clientmove(self, clid, cid):
+        '''
+        Move client <clid> to channel with id <cid>
+        '''
+        self.command('clientmove', {'clid': clid, 'cid': cid})
