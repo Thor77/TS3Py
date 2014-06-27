@@ -9,7 +9,8 @@ class Observer(Plugin):
         self.blocklist = []
         self.readBlockFile()
         # commands
-        self.registerCommand('reloadBlockedWords', self.readBlockFile, 'Reload file with blocked words')
+        self.registerCommand('reloadBlocklist', self.readBlockFile_func, 'Reload file with blocked words')
+        self.registerCommand('blocklist', self.blocklist_func, 'Show the current blocklist')
 
     def observe(self):
         print('observing...')
@@ -24,11 +25,19 @@ class Observer(Plugin):
                 self.bot.channeldelete(channel)
                 print('channel %s deleted because "%s"!' % (cname, string))
 
+    def readBlockFile_func(self, params, clid, clname):
+        self.readBlockFile()
+        self.sendtextmessageClient(clid, 'Success reloading blocked words!')
+
     def readBlockFile(self):
-        filename = './blocked.txt'
+        filename = 'plugins/observe/blocked.txt'
         f = open(filename)
+        self.blocklist = []
         for line in f:
             self.blocklist.append(line.strip())
+
+    def blocklist_func(self, params, clid, clname):
+        self.sendtextmessageClient(clid, 'Current blocklist: %s' % ', '.join(self.blocklist))
 
     def onUnload(self):
         self.funcThread.stop()
