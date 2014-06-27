@@ -76,7 +76,7 @@ class TS3Bot(TS3Query):
         Register a command
         '''
         if cmd not in self.registeredCommands:
-            self.registeredCommands[cmd] = [func, helpstring]
+            self.registeredCommands[cmd.lower()] = [func, helpstring]
 
     def unregisterCommand(self, cmd):
         '''
@@ -141,7 +141,7 @@ class TS3Bot(TS3Query):
         msg = data['msg'].strip()
         # find
         if msg[:len(self.call)] == self.call:
-            command = msg[len(self.call):].split(' ')[0]
+            command = msg[len(self.call):].split(' ')[0].lower()
             params = msg.split(' ')[1:]
             # execute
             if command in self.registeredCommands:
