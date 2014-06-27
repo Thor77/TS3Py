@@ -23,7 +23,7 @@ class Observer(Plugin):
                 ctopic = ''
             if any(string.lower() in cname or string.lower() in ctopic for string in self.blocklist):
                 self.bot.channeldelete(channel)
-                print('channel %s deleted because "%s"!' % (cname, string))
+                print('channel %s deleted!' % cname)
 
     def readBlockFile_func(self, params, clid, clname):
         self.readBlockFile()
