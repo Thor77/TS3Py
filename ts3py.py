@@ -67,7 +67,7 @@ class TS3Server:
         Send command to the server
         '''
         # send command
-        self.telnet.write(('%s\n\r' % self._build_command(cmd, params, options)).encode())
+        self.telnet.write(('%s\n\r' % self._build_command(cmd, params, options)).encode(errors='replace'))
 
         # response
         r = None
