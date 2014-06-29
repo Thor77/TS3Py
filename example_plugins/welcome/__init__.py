@@ -15,6 +15,7 @@ class Welcome(Plugin):
                 return
         except KeyError:
             print(TS3Error('Got invalid data!'))
+            return
 
         dbid = data['client_database_id']
         nick = data['client_nickname']
