@@ -12,7 +12,7 @@ class Automove(Plugin):
 
     def observe(self):
         print('looking...')
-        clientlist = self.clientlist()
+        clientlist = self.clientlist_more_infos()
         for clid in clientlist:
             clinfo = clientlist[clid]
             afk_channel = self.afk_channel_id
@@ -49,8 +49,10 @@ class Automove(Plugin):
         self.minutes_until_move = int(config['Automove']['move_delay'])
         self.afk_channel_id = config['Automove']['afk_channel_id']
 
-    def clientlist(self):
+    def clientlist_more_infos(self):
         raw = self.command('clientlist', options=['info', 'country', 'away', 'voice'])
+        if not isinstance(raw, list):
+            raw = [raw]
         info = {}
         for client in raw:
             if client['client_type'] == 0:
