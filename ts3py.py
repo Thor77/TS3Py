@@ -27,7 +27,7 @@ class TS3Response:
 
     def checkStatus(self, raw_status):
         status = raw_status.replace('error ', '')
-        parsed = ts3utils.parseData(status)
+        parsed = ts3utils.parseData(status)[0]
         if parsed['id'] != 0:
             print(TS3Error(parsed['msg'], parsed['id']))
 
@@ -83,7 +83,7 @@ class TS3Server:
         if parsed_response.data_e:
             return parsed_response.getData()
         else:
-            return True
+            return []
 
     def _build_command(self, cmd, params, options):
         for key in params:
@@ -153,7 +153,7 @@ class TS3Query(TS3Server):
         '''
         Get infos about client with client_id
         '''
-        return self.command('clientinfo', {'clid': client_id})
+        return self.command('clientinfo', {'clid': client_id})[0]
 
     # sending (msg/poke)
     def sendtextmessageServer(self, target_id, msg):
