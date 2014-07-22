@@ -35,7 +35,7 @@ def unescape(data):
 	try:
 		data = int(data)
 		return data
-	except:
+	except ValueError:
 		return data
 
 def parseData(data):
@@ -50,7 +50,4 @@ def parseData(data):
 		for key in regexed:
 			d[key[0]] = unescape(key[1])
 		parsed.append(d)
-	if len(parts) > 1:
-		return parsed
-	else:
-		return parsed[0]
+	return parsed
