@@ -194,7 +194,7 @@ class TS3Bot(TS3Query):
         if notify_name in self.registeredEvents:
             functions = self.registeredEvents[notify_name]
             for func in functions:
-                func(parsed)
+                func(parsed[0])
         time.sleep(self.loopDelay)
 
     # overwrite command-function
