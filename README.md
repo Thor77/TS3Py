@@ -11,7 +11,7 @@ Example usage
 =============
 Get channellist:
   
-    from pyts3 import TS3Query  
+    from ts3py import TS3Query  
     ip = ''
     port = 00000
     query_login = ''
