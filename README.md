@@ -18,10 +18,9 @@ Get channellist:
     query_password = ''
     virtualserver_id = 1
     connection = TS3Query(ip, port)
-    connection.connect()
     connection.login(query_login, query_password)
     connection.use(virtualserver_id)
-    channellist = connection.getChannellist()
+    channellist = connection.channellist()
     for channel_id in channellist:
         print('Channel-ID: %s Channel-Name: %s' % (channel_id, channellist[channel_id]))
     
