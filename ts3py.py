@@ -3,6 +3,7 @@ import re
 import time
 import ts3utils
 
+
 class TS3Error(Exception):
 
     def __init__(self, msg, code=None):
@@ -10,16 +11,17 @@ class TS3Error(Exception):
         self.msg = msg
 
     def __str__(self):
-        if self.code != None:
+        if self.code is not None:
             return 'ID %s MSG %s' % (self.code, self.msg)
         else:
             return str(self.msg)
+
 
 class TS3Response:
 
     def __init__(self, raw_status, data=None):
         self.checkStatus(raw_status)
-        if data != None:
+        if data is not None:
             self.data = ts3utils.parseData(data)
             self.data_e = True
         else:
@@ -33,6 +35,7 @@ class TS3Response:
 
     def getData(self):
         return self.data
+
 
 class TS3Server:
 
@@ -91,6 +94,7 @@ class TS3Server:
         for option in options:
             cmd += ' -%s' % (option)
         return cmd.strip()
+
 
 class TS3Query(TS3Server):
 
@@ -160,19 +164,22 @@ class TS3Query(TS3Server):
         '''
         Send textmessage to server with id target_id
         '''
-        self.command('sendtextmessage', {'targetmode': 3, 'target': target_id, 'msg': msg})
+        self.command('sendtextmessage',
+                     {'targetmode': 3, 'target': target_id, 'msg': msg})
 
     def sendtextmessageChannel(self, target_id, msg):
         '''
         Send textmessage to channel with id target_id
         '''
-        self.command('sendtextmessage', {'targetmode': 2, 'target': target_id, 'msg': msg})
+        self.command('sendtextmessage',
+                     {'targetmode': 2, 'target': target_id, 'msg': msg})
 
     def sendtextmessageClient(self, target_id, msg):
         '''
         Send textmessage to client with id target_id
         '''
-        self.command('sendtextmessage', {'targetmode': 1, 'target': target_id, 'msg': msg})
+        self.command('sendtextmessage',
+                     {'targetmode': 1, 'target': target_id, 'msg': msg})
 
     def clientpoke(self, target_id, msg):
         '''
@@ -188,7 +195,7 @@ class TS3Query(TS3Server):
         params = {}
         params['clid'] = target_id
         params['reasonid'] = 4
-        if reason != None:
+        if reason is not None:
             params['reasonmsg'] = reason
         self.command('clientkick', params)
 
@@ -196,7 +203,7 @@ class TS3Query(TS3Server):
         params = {}
         params['clid'] = target_id
         params['reasonid'] = 5
-        if reason != None:
+        if reason is not None:
             params['reasonmsg'] = reason
         self.command('clientkick', params)
 
@@ -207,13 +214,14 @@ class TS3Query(TS3Server):
         '''
         params = {}
         params['channel_name'] = channel_name
-        if channel_topic != None:
+        if channel_topic is not None:
             params['channel_topic'] = channel_topic
         self.command('channelcreate', params)
 
     def channeldelete(self, channel_id, force=1):
         '''
-        Delete channel with id channel_id (if force == 1, all channels will be moved to the main-channel)
+        Delete channel with id channel_id
+        (if force == 1, all channels will be moved to the main-channel)
         '''
         self.command('channeldelete', {'cid': channel_id, 'force': force})
 
@@ -224,9 +232,9 @@ class TS3Query(TS3Server):
         '''
         params = {}
         params['clid'] = client_id
-        if time_sec != None:
+        if time_sec is not None:
             params['time'] = time_sec
-        if reason != None:
+        if reason is not None:
             params['banreason'] = reason
         self.command('banclient', params)
 
