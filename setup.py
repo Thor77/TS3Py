@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
 
     name='TS3Py',
-    version='0.0.1',
+    version='0.1.1',
     author='Thor77',
     author_email='thor77@xthor77.tk',
     description='A TS3Query-API',
