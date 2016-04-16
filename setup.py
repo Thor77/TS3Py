@@ -6,7 +6,7 @@ setup(
     name='TS3Py',
     version='0.1.1',
     author='Thor77',
-    author_email='thor77@xthor77.tk',
+    author_email='thor77@thor77.org',
     description='A TS3Query-API',
     keywords='ts3 pyts3 ts3py',
     url='https://github.com/Thor77/TS3py',
