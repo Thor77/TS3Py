@@ -39,14 +39,16 @@ class TS3Response:
 
 class TS3Server:
 
-    def __init__(self):
+    def __init__(self, ip, port=10011):
         '''
         This class offers a connection to a TS3Server through Query
         '''
         self.timeout = 5.0
         self.telnet = None
 
-    def connect(self, ip, port):
+        self.connect(ip, port)
+
+    def connect(self, ip, port=10011):
         '''
         Connect to the Server
         '''
@@ -93,9 +95,8 @@ class TS3Server:
 
 class TS3Query(TS3Server):
 
-    def __init__(self, ip, port):
-        TS3Server.__init__(self)
-        self.connect(ip, port)
+    def __init__(self, ip, port=10011):
+        TS3Server.__init__(self, ip, port)
 
     def login(self, username, password):
         '''
