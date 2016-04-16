@@ -61,7 +61,7 @@ class TS3Server:
         '''
         Disconnect from the Server
         '''
-        self.telnet.write('quit \n\r'.encode())
+        self.command('quit')
         self.telnet.close()
 
     def command(self, cmd, params={}, options=[]):
