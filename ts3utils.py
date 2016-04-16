@@ -41,6 +41,14 @@ def unescape(data):
         return data
 
 
+def build_command(cmd, params={}, options=[]):
+    for key, value in params.items():
+        cmd += ' {}={}'.format(key, escape(value))
+    for option in options:
+        cmd += ' -{}'.format(option)
+    return cmd.strip()
+
+
 def parseData(data):
     '''
     Parse telnet-data to key|value-dict

@@ -70,7 +70,7 @@ class TS3Server:
         Send command to the server
         '''
         # send command
-        self.telnet.write(('%s\n\r' % self._build_command(cmd, params, options)).encode(errors='replace'))
+        self.telnet.write(('%s\n\r' % ts3utils.build_command(cmd, params, options)).encode(errors='replace'))
 
         # response
         r = None
@@ -87,13 +87,6 @@ class TS3Server:
             return parsed_response.getData()
         else:
             return []
-
-    def _build_command(self, cmd, params, options):
-        for key in params:
-            cmd += ' %s=%s' % (key, ts3utils.escape(params[key]))
-        for option in options:
-            cmd += ' -%s' % (option)
-        return cmd.strip()
 
 
 class TS3Query(TS3Server):
