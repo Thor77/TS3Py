@@ -45,7 +45,6 @@ class TS3Server:
         '''
         self.timeout = 5.0
         self.telnet = None
-        self.connected = False
 
     def connect(self, ip, port):
         '''
@@ -57,7 +56,6 @@ class TS3Server:
         if self.telnet.read_until('TS3'.encode('UTF-8'), self.timeout)[3:]\
                 .decode('UTF-8', 'ignore') == 'TS3':
             raise TS3Error('No Teamspeak3-Server on %s:%s!' % (ip, port))
-        self.connected = True
 
     def disconnect(self):
         '''
