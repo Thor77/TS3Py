@@ -10,7 +10,8 @@ escape_data = {
 command_data = {
     'clientkick clid=5 reasonid=4 reasonmsg=Go\saway!':
         ('clientkick',
-            OrderedDict([('clid', 5), ('reasonid', 4), ('reasonmsg', 'Go away!')]), [])
+            OrderedDict([('clid', 5), ('reasonid', 4),
+                         ('reasonmsg', 'Go away!')]), [])
 }
 
 
