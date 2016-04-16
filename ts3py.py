@@ -76,19 +76,19 @@ class TS3Server:
                                                           errors='replace'))
 
         # response
-        r = None
+        response_data = None
         response = '!=error'
         lines = []
-        while response[:5] != 'error':
+        while not response.startswith('error'):
             response = self.telnet.read_until('\n\r'.encode('UTF-8'))\
-                       .decode('UTF-8', 'ignore').strip()
+                         .decode('UTF-8', 'ignore').strip()
             lines.append(response)
         status = lines[-1]
         if len(lines) > 1:
-            r = lines[-2]
-        parsed_response = TS3Response(status, r)
+            response_data = lines[-2]
+        parsed_response = TS3Response(status, response_data)
         if parsed_response.data_e:
-            return parsed_response.getData()
+            return parsed_response.data
         else:
             return []
 
