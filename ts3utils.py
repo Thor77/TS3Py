@@ -20,6 +20,9 @@ TSRegex = re.compile(r'(\w+)=(.*?)(\s|$|\|)')
 def escape(data):
     '''
     Escape to TS3Query-Format
+
+    :param data: data in default form
+    :type data: str
     '''
     data = str(data)
     for normal, ts3 in escape_strings:
@@ -30,6 +33,9 @@ def escape(data):
 def unescape(data):
     '''
     Escape to Human-Readable-Format
+
+    :param data: data in escaped form
+    :type data: str
     '''
     for normal, ts3 in escape_strings:
         data = data.replace(ts3, normal)
@@ -42,6 +48,16 @@ def unescape(data):
 
 
 def build_command(cmd, params={}, options=[]):
+    '''
+    Build query command-string from cmd, params and options
+
+    :param cmd: command
+    :param params: parameters for the command
+    :param options: options for the command
+    :type cmd: str
+    :type params: dict
+    :type options: list
+    '''
     for key, value in params.items():
         cmd += ' {}={}'.format(key, escape(value))
     for option in options:
