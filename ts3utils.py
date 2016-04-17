@@ -1,5 +1,3 @@
-import re
-
 escape_strings = [
         (chr(92), r'\\'),  # \
         (chr(47), r'\/'),  # /
@@ -13,8 +11,6 @@ escape_strings = [
         (chr(9), r'\t'),  # Horizontal Tab
         (chr(11), r'\v'),  # Vertical tab
 ]
-
-TSRegex = re.compile(r'(\w+)=(.*?)(\s|$|\|)')
 
 
 def escape(data):
@@ -65,16 +61,25 @@ def build_command(cmd, params={}, options=[]):
     return cmd.strip()
 
 
-def parseData(data):
+def unpack_command(command):
     '''
-    Parse telnet-data to key|value-dict
+    Parse raw query-command (probably response) to a list of key-value-dicts
+
+    :param command: query-command
+    :type command: str
+
+    :return: list of parsed params from command
+    :rtype: list
     '''
-    parts = data.split('|')
-    parsed = []
-    for part in parts:
-        d = {}
-        regexed = TSRegex.findall(part)
-        for key in regexed:
-            d[key[0]] = unescape(key[1])
-        parsed.append(d)
-    return parsed
+    raw_objects = command.split('|')
+    parsed_objects = []
+    for raw_object in raw_objects:
+        parsed_object = {}
+        for param in raw_object.split():
+            if '=' not in param:
+                parsed_objects.append(param)
+                continue
+            key, value = param.split('=')
+            parsed_object[key] = unescape(value)
+        parsed_objects.append(parsed_object)
+    return parsed_objects

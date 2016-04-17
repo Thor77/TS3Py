@@ -28,3 +28,10 @@ def test_unescape():
 def test_build_command():
     for built, (cmd, params, options) in command_data.items():
         assert ts3utils.build_command(cmd, params, options) == built
+
+
+def test_unpack_command():
+    for built, (cmd, params, options) in command_data.items():
+        unpacked = ts3utils.unpack_command(built)
+        assert unpacked[0] == cmd
+        assert unpacked[1] == params

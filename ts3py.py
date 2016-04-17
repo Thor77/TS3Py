@@ -1,5 +1,4 @@
 import telnetlib
-import re
 import time
 import ts3utils
 
@@ -15,23 +14,6 @@ class TS3Error(Exception):
             return 'ID %s MSG %s' % (self.code, self.msg)
         else:
             return str(self.msg)
-
-
-class TS3Response:
-
-    def __init__(self, raw_status, data=None):
-        self.checkStatus(raw_status)
-        if data is not None:
-            self.data = ts3utils.parseData(data)
-            self.data_e = True
-        else:
-            self.data_e = False
-
-    def checkStatus(self, raw_status):
-        status = raw_status.replace('error ', '')
-        parsed = ts3utils.parseData(status)[0]
-        if parsed['id'] != 0:
-            print(TS3Error(parsed['msg'], parsed['id']))
 
 
 class TS3Server:
@@ -80,14 +62,15 @@ class TS3Server:
             response = self.telnet.read_until('\n\r'.encode('UTF-8'))\
                          .decode('UTF-8', 'ignore').strip()
             lines.append(response)
-        status = lines[-1]
+        # check status
+        status = ts3utils.unpack_command(lines[-1])
+        if status[1]['id'] != 0:
+            raise TS3Error(status[1]['msg'], status[1]['id'])
+
+        # response-data
         if len(lines) > 1:
-            response_data = lines[-2]
-        parsed_response = TS3Response(status, response_data)
-        if parsed_response.data_e:
-            return parsed_response.data
-        else:
-            return []
+            return ts3utils.unpack_command(lines[-2])
+        return []
 
 
 class TS3Query(TS3Server):
