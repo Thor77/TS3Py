@@ -5,15 +5,12 @@ import ts3utils
 
 class TS3Error(Exception):
 
-    def __init__(self, msg, code=None):
-        self.code = code
+    def __init__(self, msg, error_id):
         self.msg = msg
+        self.error_id = error_id
 
     def __str__(self):
-        if self.code is not None:
-            return 'ID %s MSG %s' % (self.code, self.msg)
-        else:
-            return str(self.msg)
+        return 'ID %s MSG %s' % (self.error_id, self.msg)
 
 
 class TS3Server:
@@ -36,7 +33,7 @@ class TS3Server:
         # check
         if self.telnet.read_until('TS3'.encode('UTF-8'), self.timeout)[3:]\
                 .decode('UTF-8', 'ignore') == 'TS3':
-            raise TS3Error('No Teamspeak3-Server on %s:%s!' % (ip, port))
+            raise Exception('No Teamspeak3-Server on {}:{}!'.format(ip, port))
 
     def disconnect(self):
         '''
