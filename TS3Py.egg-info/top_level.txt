@@ -1,2 +1,0 @@
-ts3py
-ts3utils

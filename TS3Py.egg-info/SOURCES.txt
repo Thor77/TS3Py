@@ -1,7 +1,0 @@
-setup.py
-ts3py.py
-ts3utils.py
-TS3Py.egg-info/PKG-INFO
-TS3Py.egg-info/SOURCES.txt
-TS3Py.egg-info/dependency_links.txt
-TS3Py.egg-info/top_level.txt
