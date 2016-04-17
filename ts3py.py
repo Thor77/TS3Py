@@ -33,9 +33,6 @@ class TS3Response:
         if parsed['id'] != 0:
             print(TS3Error(parsed['msg'], parsed['id']))
 
-    def getData(self):
-        return self.data
-
 
 class TS3Server:
 
