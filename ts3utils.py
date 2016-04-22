@@ -78,8 +78,8 @@ def unpack_command(command):
         for param in raw_object.split():
             if '=' not in param:
                 parsed_objects.append(param)
-                continue
-            key, value = param.split('=')
-            parsed_object[key] = unescape(value)
+            else:
+                key, value = param.split('=')
+                parsed_object[key] = unescape(value)
         parsed_objects.append(parsed_object)
     return parsed_objects
