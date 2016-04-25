@@ -60,13 +60,13 @@ class TS3Server:
                          .decode('UTF-8', 'ignore').strip()
             lines.append(response)
         # check status
-        status = ts3utils.unpack_command(lines[-1])
-        if status[1]['id'] != 0:
-            raise TS3Error(status[1]['msg'], status[1]['id'])
+        error_data = ts3utils.parse_response(lines[-1].replace('error ', ''))
+        if error_data[0]['id'] != 0:
+            raise TS3Error(error_data[0]['msg'], error_data[0]['id'])
 
         # response-data
         if len(lines) > 1:
-            return ts3utils.unpack_command(lines[-2])
+            return ts3utils.parse_response(lines[-2])
         return []
 
 

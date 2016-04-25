@@ -4,7 +4,7 @@ from setuptools import setup
 setup(
 
     name='TS3Py',
-    version='0.3.5',
+    version='0.4.0',
     author='Thor77',
     author_email='thor77@thor77.org',
     description='A Python Teamspeak3-Query Library',

@@ -61,25 +61,25 @@ def build_command(cmd, params={}, options=[]):
     return cmd.strip()
 
 
-def unpack_command(command):
+def parse_response(response):
     '''
-    Parse raw query-command (probably response) to a list of key-value-dicts
+    Parse raw response to a list of key-value-dicts
 
-    :param command: query-command
-    :type command: str
+    :param response: query-response
+    :type response: str
 
-    :return: list of parsed params from command
+    :return list of parsed params from response
     :rtype: list
     '''
-    raw_objects = command.split('|')
+    raw_objects = response.split('|')
     parsed_objects = []
     for raw_object in raw_objects:
         parsed_object = {}
         for param in raw_object.split():
             if '=' not in param:
-                parsed_objects.append(param)
+                key, value = param, ''
             else:
                 key, value = param.split('=')
-                parsed_object[key] = unescape(value)
+            parsed_object[key] = unescape(value)
         parsed_objects.append(parsed_object)
     return parsed_objects
