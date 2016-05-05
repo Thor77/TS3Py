@@ -15,9 +15,9 @@ escape_strings = [
 
 def escape(data):
     '''
-    Escape to TS3Query-Format
+    Escape to TS3Query-format.
 
-    :param data: data in default form
+    :param data: data in normal form
     :type data: str
     '''
     data = str(data)
@@ -28,7 +28,7 @@ def escape(data):
 
 def unescape(data):
     '''
-    Escape to Human-Readable-Format
+    Escape to normal-format.
 
     :param data: data in escaped form
     :type data: str
@@ -45,7 +45,7 @@ def unescape(data):
 
 def build_command(cmd, params={}, options=[]):
     '''
-    Build query command-string from cmd, params and options
+    Build query command-string from cmd, params and options.
 
     :param cmd: command
     :param params: parameters for the command
@@ -63,12 +63,12 @@ def build_command(cmd, params={}, options=[]):
 
 def parse_response(response):
     '''
-    Parse raw response to a list of key-value-dicts
+    Parse raw response to a list of key-value-dicts.
 
     :param response: query-response
     :type response: str
 
-    :return list of parsed params from response
+    :return: list of parsed objects from response
     :rtype: list
     '''
     raw_objects = response.split('|')

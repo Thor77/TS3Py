@@ -6,6 +6,14 @@ import ts3utils
 class TS3Error(Exception):
 
     def __init__(self, msg, error_id):
+        '''
+        Create a TS3Error-object.
+
+        :param msg: error-message
+        :param error_id: error-id
+        :type msg: string
+        :type error_id: int
+        '''
         self.msg = msg
         self.error_id = error_id
 
@@ -17,7 +25,12 @@ class TS3Server:
 
     def __init__(self, ip, port=10011):
         '''
-        This class offers a connection to a TS3Server through Query
+        Initiate a connection to a Teamspeak3-Server.
+
+        :param ip: ip of the Teamspeak3-server
+        :param port: port of the Teamspeak3-server's query-interface
+        :type ip: string
+        :type port: int
         '''
         self.timeout = 5.0
         self.telnet = None
@@ -26,7 +39,12 @@ class TS3Server:
 
     def connect(self, ip, port=10011):
         '''
-        Connect to the Server
+        Connect to a Teamspeak3-Server.
+
+        :param ip: ip of the Teamspeak3-server
+        :param port: port of the Teamspeak3-server's query-interface
+        :type ip: string
+        :type port: int
         '''
         # connect
         self.telnet = telnetlib.Telnet(ip, port)
@@ -37,14 +55,24 @@ class TS3Server:
 
     def disconnect(self):
         '''
-        Disconnect from the Server
+        Disconnect from the Teamspeak3-server.
         '''
         self.command('quit')
         self.telnet.close()
 
     def command(self, cmd, params={}, options=[]):
         '''
-        Send command to the server
+        Send a command to the Teamspeak3-server and return the response.
+
+        :param cmd: command
+        :param params: parameters appended to the command
+        :param options: options appended to the command
+        :type cmd: string
+        :type params: dict
+        :type options: list
+
+        :return: response of the command (if any)
+        :rtype: list
         '''
         # send command
         command = ts3utils.build_command(cmd, params, options)
