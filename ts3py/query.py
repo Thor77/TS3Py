@@ -21,7 +21,7 @@ class TS3Error(Exception):
         return 'ID %s MSG %s' % (self.error_id, self.msg)
 
 
-class TS3Server:
+class Query:
 
     def __init__(self, ip, port=10011):
         '''
