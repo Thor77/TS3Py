@@ -1,8 +1,25 @@
 API
 ***
 
-.. autoclass:: ts3py.TS3Server
+=========
+Low-level
+=========
+
+.. autoclass:: ts3py.Query
   :members:
 
-.. automodule:: ts3utils
+==========
+High-level
+==========
+
+.. autoclass:: ts3py.objects.Server
+  :members:
+
+.. autoclass:: ts3py.objects.VirtualServer
+  :members:
+
+.. autoclass:: ts3py.objects.Channel
+  :members:
+
+.. autoclass:: ts3py.objects.Client
   :members:
