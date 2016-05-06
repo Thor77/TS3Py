@@ -7,7 +7,7 @@ matrix:
   include:
     - python: 3.5
       install: pip install flake8
-      script: flake8 *.py
+      script: flake8 **/*.py
 
 install:
   - pip install pytest
