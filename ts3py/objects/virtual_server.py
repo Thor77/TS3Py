@@ -6,11 +6,30 @@ class VirtualServer:
         self.query = query
 
     def command(self, cmd, params={}, options=[]):
+        '''
+        Run a command in the context of the virtual-server.
+
+        :param cmd: command
+        :param params: parameters appended to the command
+        :param options: options appended to the command
+        :type cmd: string
+        :type params: dict
+        :type options: list
+
+        :return: response of the command (if any)
+        :rtype: list
+        '''
         self.query.command('use', params={'sid': self.virtualserver_id})
         return self.query.command(cmd, params, options)
 
     @property
     def clients(self):
+        '''
+        Return a list of clients on that virtual-server.
+
+        :return: list of clients
+        :rtype: list
+        '''
         def _clients():
             clientlist = self.command('clientlist')
             for client_data in clientlist:
@@ -23,6 +42,12 @@ class VirtualServer:
 
     @property
     def channel(self):
+        '''
+        Return a list of channel on that virtual-server.
+
+        :return: list of channel
+        :rtype: list
+        '''
         def _channel():
             channellist = self.command('channellist')
             for channel_data in channellist:

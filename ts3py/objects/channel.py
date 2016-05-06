@@ -7,6 +7,12 @@ class Channel:
 
     @property
     def clients(self):
+        '''
+        Return a list of clients in that channel.
+
+        :return: list of clients
+        :rtype: list
+        '''
         def _clients():
             clientlist = self.server.command('clientlist')
             clientlist = filter(lambda c: c['cid'] == self.cid, clientlist)

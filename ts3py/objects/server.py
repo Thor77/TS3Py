@@ -8,6 +8,12 @@ class Server:
 
     @property
     def virtual_servers(self):
+        '''
+        Return a list of virtual-servers on that server.
+
+        :return: list of virtual-servers
+        :rtype: list
+        '''
         def _virtual_servers():
             serverlist = self.query.command('serverlist')
             for server_data in serverlist:
@@ -21,6 +27,12 @@ class Server:
         return str(self.virtualserver_name)
 
     def login(self, username, password):
+        '''
+        Login to an user-account on the server.
+
+        :param username: name of the user
+        :param password: password of the user
+        '''
         self.query.command('login', params={
             'client_login_name': username, 'client_login_password': password
         })
