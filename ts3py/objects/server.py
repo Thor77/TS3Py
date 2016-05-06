@@ -17,6 +17,9 @@ class Server:
                 yield virtual_server
         return list(_virtual_servers())
 
+    def __repr__(self):
+        return str(self.virtualserver_name)
+
     def login(self, username, password):
         self.query.command('login', params={
             'client_login_name': username, 'client_login_password': password
