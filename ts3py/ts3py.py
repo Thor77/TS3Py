@@ -1,5 +1,6 @@
 import telnetlib
-import ts3utils
+
+from ts3py import ts3utils
 
 
 class TS3Error(Exception):

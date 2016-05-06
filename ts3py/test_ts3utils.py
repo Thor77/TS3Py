@@ -1,6 +1,6 @@
 from collections import OrderedDict
 
-import ts3utils
+from ts3py import ts3utils
 
 escape_data = {
     # escaped => original
