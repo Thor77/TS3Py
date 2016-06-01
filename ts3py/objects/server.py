@@ -17,9 +17,7 @@ class Server:
         def _virtual_servers():
             serverlist = self.query.command('serverlist')
             for server_data in serverlist:
-                virtual_server = VirtualServer(self.query)
-                for key, value in server_data.items():
-                    setattr(virtual_server, key, value)
+                virtual_server = VirtualServer(self.query, server_data)
                 yield virtual_server
         return list(_virtual_servers())
 

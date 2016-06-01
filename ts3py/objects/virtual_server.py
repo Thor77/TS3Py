@@ -2,8 +2,11 @@ from ts3py.objects import Channel, Client
 
 
 class VirtualServer:
-    def __init__(self, query):
+    def __init__(self, query, params={}):
         self.query = query
+        # remove this duplication in the next release
+        for key, value in params.items():
+            setattr(self, key, value)
 
     def command(self, cmd, params={}, options=[]):
         '''
@@ -33,10 +36,8 @@ class VirtualServer:
         def _clients():
             clientlist = self.command('clientlist')
             for client_data in clientlist:
-                client = Client(self)
+                client = Client(self, client_data)
                 client.virtualserver_id = self.virtualserver_id
-                for key, value in client_data.items():
-                    setattr(client, key, value)
                 yield client
         return list(_clients())
 
@@ -51,10 +52,8 @@ class VirtualServer:
         def _channel():
             channellist = self.command('channellist')
             for channel_data in channellist:
-                channel = Channel(self)
+                channel = Channel(self, channel_data)
                 channel.virtualserver_id = self.virtualserver_id
-                for key, value in channel_data.items():
-                    setattr(channel, key, value)
                 yield channel
         return list(_channel())
 

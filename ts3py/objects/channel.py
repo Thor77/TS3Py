@@ -1,10 +1,8 @@
 from ts3py.objects import Client
+from ts3py.objects.proto import TS3ObjectProto
 
 
-class Channel:
-    def __init__(self, server):
-        self.server = server
-
+class Channel(TS3ObjectProto):
     @property
     def clients(self):
         '''
@@ -17,9 +15,7 @@ class Channel:
             clientlist = self.server.command('clientlist')
             clientlist = filter(lambda c: c['cid'] == self.cid, clientlist)
             for client_data in clientlist:
-                client = Client(self.server)
-                for key, value in client_data.items():
-                    setattr(client, key, value)
+                client = Client(self.server, client_data)
                 yield client
         return list(_clients())
 
