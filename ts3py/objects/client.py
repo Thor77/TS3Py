@@ -1,6 +1,6 @@
-from ts3py.objects.proto import TS3ObjectProto
+from ts3py.objects.proto import Proto
 
 
-class Client(TS3ObjectProto):
+class Client(Proto):
     def __repr__(self):
         return str(self.client_nickname)

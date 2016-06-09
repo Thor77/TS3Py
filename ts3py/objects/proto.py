@@ -1,4 +1,4 @@
-class TS3ObjectProto:
+class Proto:
     def __init__(self, server, params={}):
         self.server = server
         for key, value in params.items():

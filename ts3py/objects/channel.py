@@ -1,8 +1,8 @@
 from ts3py.objects.client import Client
-from ts3py.objects.proto import TS3ObjectProto
+from ts3py.objects.proto import Proto
 
 
-class Channel(TS3ObjectProto):
+class Channel(Proto):
     @property
     def clients(self):
         '''
