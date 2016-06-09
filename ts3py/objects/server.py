@@ -1,4 +1,4 @@
-from ts3py.objects import VirtualServer
+from ts3py.objects.virtual_server import VirtualServer
 from ts3py.query import Query
 
 

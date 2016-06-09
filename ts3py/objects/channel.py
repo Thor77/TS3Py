@@ -1,4 +1,4 @@
-from ts3py.objects import Client
+from ts3py.objects.client import Client
 from ts3py.objects.proto import TS3ObjectProto
 
 

@@ -1,4 +1,5 @@
-from ts3py.objects import Channel, Client
+from ts3py.objects.channel import Channel
+from ts3py.objects.client import Client
 
 
 class VirtualServer:
