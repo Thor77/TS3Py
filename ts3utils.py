@@ -1,15 +1,15 @@
 escape_strings = [
-        (chr(92), r'\\'),  # \
-        (chr(47), r'\/'),  # /
-        (chr(32), r'\s'),  # Space
-        (chr(124), r'\p'),  # |
-        (chr(7), r'\a'),  # Bell
-        (chr(8), r'\b'),  # Backspace
-        (chr(12), r'\f'),  # Formfeed
-        (chr(10), r'\n'),  # Newline
-        (chr(13), r'\r'),  # Carrage Return
-        (chr(9), r'\t'),  # Horizontal Tab
-        (chr(11), r'\v'),  # Vertical tab
+    (chr(92), r'\\'),  # \
+    (chr(47), r'\/'),  # /
+    (chr(32), r'\s'),  # Space
+    (chr(124), r'\p'),  # |
+    (chr(7), r'\a'),  # Bell
+    (chr(8), r'\b'),  # Backspace
+    (chr(12), r'\f'),  # Formfeed
+    (chr(10), r'\n'),  # Newline
+    (chr(13), r'\r'),  # Carrage Return
+    (chr(9), r'\t'),  # Horizontal Tab
+    (chr(11), r'\v')  # Vertical tab
 ]
 
 
