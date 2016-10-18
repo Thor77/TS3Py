@@ -1,5 +1,4 @@
 import telnetlib
-import time
 import ts3utils
 
 
