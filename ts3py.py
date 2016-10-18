@@ -79,7 +79,6 @@ class TS3Server:
                                                           errors='replace'))
 
         # response
-        response_data = None
         response = '!=error'
         lines = []
         while not response.startswith('error'):
