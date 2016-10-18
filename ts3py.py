@@ -85,7 +85,7 @@ class TS3Server:
         lines = []
         while not response.startswith('error'):
             response = self.telnet.read_until('\n\r'.encode('UTF-8'))\
-                         .decode('UTF-8', 'ignore').strip()
+                .decode('UTF-8', 'ignore').strip()
             lines.append(response)
         # check status
         error_data = ts3utils.parse_response(lines[-1].replace('error ', ''))
