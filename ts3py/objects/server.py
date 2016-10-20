@@ -3,8 +3,8 @@ from ts3py.query import Query
 
 
 class Server:
-    def __init__(self, ip, port=10011):
-        self.query = Query(ip, port)
+    def __init__(self, host, port=10011):
+        self.query = Query(host, port)
 
     @property
     def virtual_servers(self):
