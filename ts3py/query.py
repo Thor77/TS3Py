@@ -34,6 +34,7 @@ class Query:
         '''
         self.timeout = 5.0
         self.telnet = None
+        self.connected = False
 
         self.connect(ip, port)
 
@@ -52,6 +53,7 @@ class Query:
         if self.telnet.read_until('TS3'.encode('UTF-8'), self.timeout)[3:]\
                 .decode('UTF-8', 'ignore') == 'TS3':
             raise Exception('No Teamspeak3-Server on {}:{}!'.format(ip, port))
+        self.connected = True
 
     def disconnect(self):
         '''
@@ -59,6 +61,7 @@ class Query:
         '''
         self.command('quit')
         self.telnet.close()
+        self.connected = False
 
     def command(self, cmd, params={}, options=[]):
         '''
@@ -74,6 +77,8 @@ class Query:
         :return: response of the command (if any)
         :rtype: list
         '''
+        if not self.connected:
+            raise Exception('Not connected')
         # send command
         command = ts3utils.build_command(cmd, params, options)
         self.telnet.write('{}\n\r'.format(command).encode('UTF-8',
