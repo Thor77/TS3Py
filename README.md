@@ -4,6 +4,8 @@ TS3Py
 
 A Python Teamspeak3-Query Library
 
+Checkout the upcoming version with a completely new API [here](https://github.com/Thor77/TS3Py/tree/develop).
+
 Installation
 ============
 `pip install TS3Py`
