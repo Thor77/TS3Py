@@ -13,12 +13,10 @@ Installation
 Examples
 ========
 ```python
-from ts3py import TS3Query
-c = TS3Query('ts.example.com')
-c.login('serveradmin', 'password')
-c.use(1)
-channellist = c.channellist()
-for channel_id in channellist:
-    print(channel_id, channellist[channel_id], sep='|')
-c.disconnect()
+from ts3py import Server
+s = Server(host='ts.example.com', port=10011)  # connect
+s.login('serveradmin', 'password')  # login
+vserver = s.virtual_servers[0]  # choose first virtual server
+for channel in vserver.channel:  # iterate over channels
+  print(channel.cid, channel, sep='|')  # print channelid and channel-data
 ```
