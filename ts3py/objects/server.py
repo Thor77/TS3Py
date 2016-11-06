@@ -34,3 +34,9 @@ class Server:
         self.query.command('login', params={
             'client_login_name': username, 'client_login_password': password
         })
+
+    def logout(self):
+        '''
+        Logout from the current session
+        '''
+        self.query.command('logout')
