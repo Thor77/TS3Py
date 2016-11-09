@@ -1,5 +1,5 @@
-from ts3py.objects.client import Client
-from ts3py.objects.proto import Proto
+from .client import Client
+from .proto import Proto
 
 
 class Channel(Proto):
