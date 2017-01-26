@@ -1,3 +1,9 @@
-*.pyc
-__init__.py
-main.py
+__pycache__/
+*.py[cod]
+venv/
+
+build/
+dist/
+*.egg-info/
+.cache/
+*.egg
