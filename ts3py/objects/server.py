@@ -40,3 +40,8 @@ class Server:
         Logout from the current session
         '''
         self.query.command('logout')
+
+    def gm(self, message):
+        self.query.command('gm', params={
+            'msg': message
+        })
