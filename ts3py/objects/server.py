@@ -30,6 +30,9 @@ class Server:
 
         :param username: name of the user
         :param password: password of the user
+
+        :type username: str
+        :type password: str
         '''
         self.query.command('login', params={
             'client_login_name': username, 'client_login_password': password
