@@ -10,7 +10,11 @@ matrix:
       script: flake8 **/*.py
 
 install:
-  - pip install pytest
+  - pip install pytest pytest-cov
 
 script:
-  - py.test ts3py/tests/
+  - py.test --cov=ts3py
+
+after_success:
+  - pip install coveralls
+  - coveralls
