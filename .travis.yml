@@ -13,4 +13,4 @@ install:
   - pip install pytest
 
 script:
-  - py.test
+  - py.test ts3py/tests/
