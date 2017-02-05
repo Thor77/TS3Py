@@ -13,7 +13,7 @@ install:
   - pip install pytest pytest-cov
 
 script:
-  - py.test --cov=ts3py
+  - py.test --cov=ts3py ts3py/tests/
 
 after_success:
   - pip install coveralls
