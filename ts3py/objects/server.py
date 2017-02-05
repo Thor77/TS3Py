@@ -42,6 +42,13 @@ class Server:
         self.query.command('logout')
 
     def gm(self, message):
+        '''
+        Send a text message to all clients on all virtual servers
+
+        :param message: message to be sent
+
+        :type message: str
+        '''
         self.query.command('gm', params={
             'msg': message
         })
