@@ -5,6 +5,7 @@ from ts3py.query import Query
 class Server:
     def __init__(self, host, port=10011):
         self.query = Query(host, port)
+        self.host, self.port = host, port
 
     @property
     def virtual_servers(self):
@@ -22,7 +23,7 @@ class Server:
         return list(_virtual_servers())
 
     def __repr__(self):
-        return str(self.virtualserver_name)
+        return '{host}:{port}'.format(host=self.host, port=self.port)
 
     def login(self, username, password):
         '''
