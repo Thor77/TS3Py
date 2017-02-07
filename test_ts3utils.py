@@ -27,6 +27,12 @@ response_data = {
                     ('virtualserver_name', 'Test Server1'),
                     ('virtualserver_machine_id', '')]),
         OrderedDict([('virtualserver_id', 2)])],
+    'clid=1 client_unique_identifier=TESTING42=': [
+        OrderedDict([
+            ('clid', 1),
+            ('client_unique_identifier', 'TESTING42=')
+        ])
+    ]
 }
 
 
