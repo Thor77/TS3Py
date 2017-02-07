@@ -79,7 +79,10 @@ def parse_response(response):
             if '=' not in param:
                 key, value = param, ''
             else:
-                key, value = param.split('=')
+                param_split = param.split('=')
+                key = param_split[0]
+                value = param_split[1] if len(param_split) == 2\
+                    else '='.join(param_split[1:])
             parsed_object[key] = unescape(value)
         parsed_objects.append(parsed_object)
     return parsed_objects
