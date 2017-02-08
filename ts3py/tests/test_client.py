@@ -1,5 +1,7 @@
 import pytest
 
+from ts3py.testing import build_command
+
 
 @pytest.fixture
 def client(virtual_server):
@@ -17,3 +19,11 @@ def client(virtual_server):
 
 def test_repr(client):
     assert repr(client) == client.client_nickname
+
+
+def test_poke(client):
+    with client.server.query.assert_sent([build_command('clientpoke', params={
+        'clid': client.clid,
+        'msg': 'Test'
+    })]):
+        client.poke('Test')
