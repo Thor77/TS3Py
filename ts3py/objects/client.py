@@ -10,3 +10,11 @@ class Client(Proto):
             'clid': self.clid,
             'msg': message
         })
+
+    def ban(self, duration=None, reason=None):
+        params = {'clid': self.clid}
+        if duration:
+            params['time'] = duration
+        if reason:
+            params['banreason'] = reason
+        self.server.command('banclient', params=params)

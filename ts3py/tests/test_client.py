@@ -27,3 +27,12 @@ def test_poke(client):
         'msg': 'Test'
     })]):
         client.poke('Test')
+
+
+def test_ban(client):
+    with client.server.query.assert_sent([build_command('banclient', params={
+        'clid': client.clid,
+        'time': 60,
+        'banreason': 'Test'
+    })]):
+        client.ban(duration=60, reason='Test')
